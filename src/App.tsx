@@ -1,12 +1,9 @@
 import React from 'react';
 import './App.css';
+import RouterWrapper from './router/RouterWrapper';
 
 function App() {
-  return (
-    <div className="App">
-      Social Network Front End
-    </div>
-  );
+  return <RouterWrapper />;
 }
 
 export default App;
