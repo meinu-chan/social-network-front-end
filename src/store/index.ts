@@ -1,12 +1,12 @@
 import { combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { defaultReducer, IDefaultState } from './defaultReducer';
+import { reducer as userReducer, IDefaultState as IDefaultUserState } from './reducers/userReducer';
 
 export interface IRootReducerState {
-  defaultReducer: IDefaultState;
+  userReducer: IDefaultUserState;
 }
 
-const rootReducer = combineReducers({ defaultReducer });
+const rootReducer = combineReducers({ userReducer });
 
 export default process.env.NODE_ENV === 'development'
   ? createStore(rootReducer, composeWithDevTools())
