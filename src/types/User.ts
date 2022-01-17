@@ -15,4 +15,6 @@ export interface IUser {
   createdAt: Date;
 }
 
+export type UpdateUserParams = Partial<Pick<IUser, 'fullName' | 'nickname' | 'photo'>>;
+
 export type UserGetMeResponse = Promise<Omit<IUser, 'password'>>;

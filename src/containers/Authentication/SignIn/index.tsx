@@ -8,7 +8,7 @@ import {
   createApiClientRequestInterceptor,
   createApiClientResponseInterceptor,
 } from '../../../api/apiClient';
-import authApi from '../../../api/authApi';
+import { signIn } from '../../../api/authApi';
 import PasswordInput from '../../../components/Form/PasswordInput';
 import isValidSignInData from '../../../helpers/FormDataValidations/isValidSignInData';
 import { isValidEmail, isValidPassword } from '../../../helpers/validations';
@@ -31,7 +31,7 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
   };
 
   const dispatch = useDispatch<Dispatch<UserReducerAction>>();
-  const { requestFn: signInApi } = useApiRequest(authApi.signIn);
+  const { requestFn: signInApi } = useApiRequest(signIn);
   const navigate = useNavigate();
 
   const [model, handleModelChange] = useModel(initialModel);

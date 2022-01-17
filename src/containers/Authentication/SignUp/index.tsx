@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import { Box, Typography, FormControl, TextField, Button } from '@mui/material';
-import authApi from '../../../api/authApi';
+import { signUp } from '../../../api/authApi';
 import PasswordInput from '../../../components/Form/PasswordInput';
 import isValidSignUpData from '../../../helpers/FormDataValidations/isValidSignUpData';
 import { isEmptyString, isValidEmail, isValidPassword } from '../../../helpers/validations';
@@ -32,7 +32,7 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
     mb: '5px',
   };
 
-  const { requestFn: signUpApi, isLoading } = useApiRequest(authApi.signUp, {
+  const { requestFn: signUpApi, isLoading } = useApiRequest(signUp, {
     showSuccessMessage: false,
   });
 

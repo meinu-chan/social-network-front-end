@@ -5,11 +5,11 @@ import {
   createApiClientResponseInterceptor,
   setApiAuthorizationHeader,
 } from '../api/apiClient';
-import authApi from '../api/authApi';
+import { refreshToken } from '../api/authApi';
 import { useDispatch } from 'react-redux';
 import Loader from '../components/Loader';
 import { authUser, logOutUser } from '../store/actions/userReducer';
-import userApi from '../api/userApi';
+import { getMe } from '../api/userApi';
 
 interface IProps {
   children: React.ReactNode;
@@ -23,13 +23,13 @@ const DataWrapper = ({ children }: IProps) => {
 
   const getCurrentUser = useCallback(async () => {
     try {
-      const { accessToken } = await authApi.refreshToken();
+      const { accessToken } = await refreshToken();
       if (accessToken) {
         setApiAuthorizationHeader(accessToken);
         createApiClientRequestInterceptor(() => dispatch(logOutUser()));
         createApiClientResponseInterceptor(() => dispatch(logOutUser()));
 
-        const res = await userApi.getMe();
+        const res = await getMe();
 
         authUser(res);
       }

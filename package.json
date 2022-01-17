@@ -16,13 +16,16 @@
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "axios": "^0.24.0",
+    "moment": "^2.29.1",
     "notistack": "^2.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-image-crop": "^9.0.5",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "redux": "^4.1.2",
+    "swr": "^1.1.2",
     "typescript": "^4.5.4",
     "web-vitals": "^2.1.2"
   },
@@ -51,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "@types/uuid": "^8.3.4",
     "redux-devtools-extension": "^2.13.9"
   }
 }

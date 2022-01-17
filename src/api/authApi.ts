@@ -27,11 +27,4 @@ const logout = (): AuthLogOutResponse =>
 const signUp = (params: IAuthSignUpParams) =>
   apiClient.post(endpointSignUp, params, { withCredentials: true }).then((res) => res.data);
 
-const api = {
-  signIn,
-  refreshToken,
-  logout,
-  signUp,
-};
-
-export default api;
+export { signIn, refreshToken, logout, signUp };
