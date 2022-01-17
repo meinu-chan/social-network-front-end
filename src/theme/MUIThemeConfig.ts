@@ -14,6 +14,11 @@ const appTheme = createTheme({
       default: colors.bgLight,
     },
   },
+  transitions: {
+    easing: {
+      sharp: 'cubic-bezier(0, 0.2, 0.8, 1)',
+    },
+  },
 });
 
 export default appTheme;

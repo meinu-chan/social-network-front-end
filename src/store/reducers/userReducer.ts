@@ -1,12 +1,12 @@
 import { Action } from 'redux';
+import { IUser } from '../../types/User';
 
-export interface IDefaultState {
-  isAuth?: boolean;
-  email: string;
-  fullName: string;
+export interface IDefaultState
+  extends Omit<IUser, 'role' | 'updatedAt' | 'createdAt' | 'password'> {
+  isAuth: boolean;
   role: string;
-  updatedAt: string;
-  _id: string;
+  updatedAt?: Date;
+  createdAt?: Date;
 }
 
 export enum ReducerType {
@@ -15,7 +15,7 @@ export enum ReducerType {
 }
 
 export interface IAction extends Action<ReducerType> {
-  payload: IDefaultState | null;
+  payload: Omit<IDefaultState, 'isAuth'> | null;
 }
 
 const defaultState: IDefaultState = {
@@ -23,7 +23,6 @@ const defaultState: IDefaultState = {
   email: '',
   fullName: '',
   role: '',
-  updatedAt: '',
   _id: '',
 };
 

@@ -1,8 +1,10 @@
 import axios, { AxiosInstance } from 'axios';
 import ENDPOINTS from './endpoints';
 
+export const baseURL = process.env.REACT_APP_API_BASE_URL;
+
 const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
+  baseURL,
   responseType: 'json',
   headers: {
     'Content-Type': 'application/json',
