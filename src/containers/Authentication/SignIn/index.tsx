@@ -16,7 +16,6 @@ import useModel from '../../../hooks/useModel';
 import useApiRequest from '../../../hooks/userApiRequest';
 import { authUser, logOutUser } from '../../../store/actions/userReducer';
 import { IAction as UserReducerAction } from '../../../store/reducers/userReducer';
-import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { appLinks } from '../../../router/routes';
 
@@ -32,7 +31,6 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
   };
 
   const dispatch = useDispatch<Dispatch<UserReducerAction>>();
-  const { enqueueSnackbar } = useSnackbar();
   const { requestFn: signInApi } = useApiRequest(authApi.signIn);
   const navigate = useNavigate();
 
@@ -42,31 +40,22 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    let success = false;
-
     if (isError) {
       setIsError(false);
     }
 
     if (isValidSignInData(model)) {
-      try {
-        const res = await signInApi({ args: model });
+      const res = await signInApi({ args: model });
 
-        if (res.accessToken) {
-          setApiAuthorizationHeader(res.accessToken);
-          createApiClientRequestInterceptor(() => dispatch(logOutUser()));
-          createApiClientResponseInterceptor(() => dispatch(logOutUser()));
+      if (res.accessToken) {
+        setApiAuthorizationHeader(res.accessToken);
+        createApiClientRequestInterceptor(() => dispatch(logOutUser()));
+        createApiClientResponseInterceptor(() => dispatch(logOutUser()));
 
-          dispatch(authUser(res.user));
-          success = true;
-        }
-      } catch (error: any) {
-        if (error.response.data.message)
-          enqueueSnackbar(error.response.data.message, {
-            variant: 'error',
-          });
+        dispatch(authUser(res.user));
       }
-      if (success) navigate(appLinks.index.link);
+
+      navigate(appLinks.index.link);
     } else {
       setIsError(true);
     }

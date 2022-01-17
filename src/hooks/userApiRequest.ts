@@ -1,7 +1,12 @@
+import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
 
-export const useApiRequest = (fetcher: any) => {
-  //   const { enqueueSnackbar } = useSnackbar();
+interface IConfig {
+  showSuccessMessage: boolean;
+}
+
+export const useApiRequest = (fetcher: any, config?: IConfig) => {
+  const { enqueueSnackbar } = useSnackbar();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(undefined);
@@ -15,9 +20,9 @@ export const useApiRequest = (fetcher: any) => {
 
         const response = await fetcher(params.args);
 
-        // if (params.successMessage) {
-        //   enqueueSnackbar(params.successMessage, { variant: 'success' });
-        // }
+        if (params.successMessage && config?.showSuccessMessage) {
+          enqueueSnackbar(params.successMessage, { variant: 'success' });
+        }
 
         setData(response);
         setIsLoading(false);
@@ -27,14 +32,14 @@ export const useApiRequest = (fetcher: any) => {
         setError(e);
         setIsLoading(false);
 
-        // enqueueSnackbar(e?.response?.data?.message || e?.message, {
-        //   variant: 'error',
-        // });
+        enqueueSnackbar(e?.response?.data?.message || e?.message, {
+          variant: 'error',
+        });
 
         throw e;
       }
     },
-    [fetcher]
+    [config?.showSuccessMessage, enqueueSnackbar, fetcher]
   );
 
   return {

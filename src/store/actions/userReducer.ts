@@ -1,6 +1,8 @@
 import { ReducerType, IDefaultState } from '../reducers/userReducer';
 
-const authUser = (payload: IDefaultState) => ({
+type AuthUserPayload = Omit<IDefaultState, 'isAuth'>;
+
+const authUser = (payload: AuthUserPayload) => ({
   type: ReducerType.AUTH_USER,
   payload,
 });

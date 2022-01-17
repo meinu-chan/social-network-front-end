@@ -17,7 +17,6 @@ import {
   createApiClientRequestInterceptor,
   createApiClientResponseInterceptor,
 } from '../../../api/apiClient';
-import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { appLinks } from '../../../router/routes';
 
@@ -33,8 +32,10 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
     mb: '5px',
   };
 
-  const { requestFn: signUpApi, isLoading } = useApiRequest(authApi.signUp);
-  const { enqueueSnackbar } = useSnackbar();
+  const { requestFn: signUpApi, isLoading } = useApiRequest(authApi.signUp, {
+    showSuccessMessage: false,
+  });
+
   const dispatch = useDispatch<Dispatch<UserReducerAction>>();
   const navigate = useNavigate();
 
@@ -48,25 +49,18 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
     if (isError) setIsError(false);
 
     if (isValidSignUpData(model)) {
-      try {
-        const res = await signUpApi({
-          args: model,
-          successMessage: 'User has been created.',
-        });
+      const res = await signUpApi({
+        args: model,
+        successMessage: 'User has been created.',
+      });
 
-        if (res.accessToken) {
-          setApiAuthorizationHeader(res.accessToken);
-          createApiClientRequestInterceptor(() => dispatch(logOutUser()));
-          createApiClientResponseInterceptor(() => dispatch(logOutUser()));
+      if (res.accessToken) {
+        setApiAuthorizationHeader(res.accessToken);
+        createApiClientRequestInterceptor(() => dispatch(logOutUser()));
+        createApiClientResponseInterceptor(() => dispatch(logOutUser()));
 
-          dispatch(authUser(res.user));
-          success = true;
-        }
-      } catch (error: any) {
-        if (error.response.data.message)
-          enqueueSnackbar(error.response.data.message, {
-            variant: 'error',
-          });
+        dispatch(authUser(res.user));
+        success = true;
       }
       if (success) navigate(appLinks.signUp2.link);
     } else {
