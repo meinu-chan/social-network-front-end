@@ -14,6 +14,7 @@ import getCroppedImage from '../helpers/getCroppedImage';
 import CloseIcon from '../icons/CloseIcon';
 import { BlobWithName } from '../types/common';
 import ReactCrop, { Crop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 const useStyles = makeStyles({
   title: {
@@ -22,6 +23,7 @@ const useStyles = makeStyles({
   cropContainer: {
     '& img': {
       maxHeight: '60vh',
+      maxWidth: '100%',
     },
   },
   closeButton: {
@@ -48,7 +50,7 @@ const CropDialog: React.FC<Props> = (props: Props) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const initialCrop: Crop = useMemo(
-    () => cropSetting || { unit: '%', width: 80, height: 10, aspect: 4 / 3, x: 10, y: 10 },
+    () => cropSetting || { unit: '%', width: 100, height: 100, aspect: 1, x: 0, y: 0 },
     [cropSetting]
   );
 
@@ -93,6 +95,9 @@ const CropDialog: React.FC<Props> = (props: Props) => {
       </DialogTitle>
       <DialogContent className={classes.cropContainer}>
         <ReactCrop
+          keepSelection
+          minWidth={100}
+          minHeight={100}
           src={fileUrl}
           onImageLoaded={onLoad}
           crop={crop}

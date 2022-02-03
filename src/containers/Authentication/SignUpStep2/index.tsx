@@ -12,7 +12,7 @@ const initialModel: InitialModel = {
 };
 
 function SignUpStep2() {
-  const [isError, setIsError] = useState(false);
+  const [isError] = useState(false);
   const [model, handleModelChange] = useModel<InitialModel>(initialModel);
   return (
     <ImageUpload

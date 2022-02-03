@@ -32,6 +32,7 @@ const ImageUpload = (props: IProps) => {
     variant = 'normal',
     cropSettings,
   } = props;
+
   const { enqueueSnackbar } = useSnackbar();
   const inputId = useMemo(() => uuid(), []);
 
@@ -71,6 +72,8 @@ const ImageUpload = (props: IProps) => {
 
       onChange(key);
     } catch (e) {
+      console.log(e);
+
       enqueueSnackbar("Can't upload image", { variant: 'error' });
     }
 
