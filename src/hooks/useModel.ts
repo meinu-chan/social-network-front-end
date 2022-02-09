@@ -1,13 +1,11 @@
 import { useCallback, useState } from 'react';
 
-export interface IModel {
-  [key: string]: any;
-}
+export type HandleModelChangeFn<T> = (key: keyof T, value: T[typeof key]) => void;
 
-const useModel = (initialModel: IModel): [IModel, (key: string, value: any) => void] => {
+const useModel = <T>(initialModel: T): [T, HandleModelChangeFn<T>] => {
   const [model, setModel] = useState(initialModel);
 
-  const handleChange = useCallback((key: string, value: any) => {
+  const handleChange = useCallback((key: keyof T, value: T[typeof key]) => {
     setModel((prevState) => ({
       ...prevState,
       [key]: value,

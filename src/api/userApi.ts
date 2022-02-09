@@ -6,6 +6,4 @@ const endpointsGetMeUrl = ENDPOINTS.GET_ME;
 
 const getMe = (): UserGetMeResponse => apiClient.get(endpointsGetMeUrl).then((res) => res.data);
 
-const api = { getMe };
-
-export default api;
+export { getMe };

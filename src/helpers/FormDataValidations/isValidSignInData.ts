@@ -1,5 +1,8 @@
-import { IModel } from '../../hooks/useModel';
 import { isValidEmail, isValidPassword } from '../validations';
+
+interface IModel {
+  [key: string]: any;
+}
 
 const isValidSignInData = (model: IModel) => {
   const errors = [];
