@@ -50,7 +50,7 @@ const CropDialog: React.FC<Props> = (props: Props) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const initialCrop: Crop = useMemo(
-    () => cropSetting || { unit: '%', width: 100, height: 100, aspect: 1, x: 0, y: 0 },
+    () => cropSetting || { unit: '%', width: 50, height: 50, aspect: 1, x: 0, y: 0 },
     [cropSetting]
   );
 
@@ -96,8 +96,10 @@ const CropDialog: React.FC<Props> = (props: Props) => {
       <DialogContent className={classes.cropContainer}>
         <ReactCrop
           keepSelection
-          minWidth={100}
-          minHeight={100}
+          minWidth={200}
+          minHeight={200}
+          maxHeight={400}
+          maxWidth={400}
           src={fileUrl}
           onImageLoaded={onLoad}
           crop={crop}

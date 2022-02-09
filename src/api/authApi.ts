@@ -5,9 +5,11 @@ import {
   AuthLogOutResponse,
   AuthRefreshTokenResponse,
   IAuthSignUpParams,
+  IAuthSignUpStep2Params,
 } from '../types/Auth';
 
 const endpointSignUp = ENDPOINTS.SIGN_UP;
+const endpointSignUpStep2 = ENDPOINTS.UPDATE_ME;
 const endpointSignIn = ENDPOINTS.SIGN_IN;
 const endpointLogOut = ENDPOINTS.LOG_OUT;
 const endpointRefreshToken = ENDPOINTS.REFRESH_TOKEN;
@@ -27,4 +29,7 @@ const logout = (): AuthLogOutResponse =>
 const signUp = (params: IAuthSignUpParams) =>
   apiClient.post(endpointSignUp, params, { withCredentials: true }).then((res) => res.data);
 
-export { signIn, refreshToken, logout, signUp };
+const signUpStep2 = (params: IAuthSignUpStep2Params) =>
+  apiClient.put(endpointSignUpStep2, params).then((res) => res.data);
+
+export { signIn, refreshToken, logout, signUp, signUpStep2 };

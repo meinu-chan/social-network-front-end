@@ -5,12 +5,14 @@ import { useSnackbar } from 'notistack';
 import { Crop } from 'react-image-crop';
 import CropDialog from '../CropDialog';
 import ImageInput from './ImageInput';
+import ImageInputButton from './ImageInputButton';
 import { BlobWithName } from '../../types/common';
 import { getFileWithUniqueName } from '../../helpers/common';
 import { getMomentFormattedDateNow } from '../../helpers/momentFormat';
 import { generatePutUrl } from '../../api/awsApi';
 
 interface IProps {
+  asButton?: boolean;
   folder: string;
   value?: string;
   onChange: (link: string) => void;
@@ -85,15 +87,29 @@ const ImageUpload = (props: IProps) => {
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      const image = new Image();
       const file = e.target.files[0];
+
+      image.onload = () => {
+        if (image.width < 200 || image.height < 250) {
+          enqueueSnackbar('Minimal image size is 200x250 pixels.', { variant: 'error' });
+
+          return;
+        }
+
+        setFileForUpload(image.src);
+        setIsCropDialogOpen(true);
+      };
 
       if (withCropper) {
         const reader = new FileReader();
 
-        reader.addEventListener('load', () => setFileForUpload(reader.result as string));
-        reader.readAsDataURL(file);
+        reader.addEventListener('load', () => {
+          const result = reader.result as string;
+          image.src = result;
+        });
 
-        setIsCropDialogOpen(true);
+        reader.readAsDataURL(file);
       } else {
         const uploadFile = getFileWithUniqueName(file);
 
@@ -106,18 +122,30 @@ const ImageUpload = (props: IProps) => {
 
   return (
     <>
-      <ImageInput
-        link={value}
-        inputId={inputId}
-        variant={variant}
-        isUploading={isUploading}
-        uploadProgress={uploadProgress}
-        acceptedFiles={acceptedFiles}
-        handleFileSelect={handleFileSelect}
-        inputValue={inputValue}
-        disabled={disabled}
-        isError={isError}
-      />
+      {(!value && (
+        <ImageInput
+          link={value}
+          inputId={inputId}
+          variant={variant}
+          isUploading={isUploading}
+          uploadProgress={uploadProgress}
+          acceptedFiles={acceptedFiles}
+          handleFileSelect={handleFileSelect}
+          inputValue={inputValue}
+          disabled={disabled}
+          isError={isError}
+        />
+      )) ||
+        (value && (
+          <ImageInputButton
+            isUploading={isUploading}
+            inputId={inputId}
+            disabled={disabled}
+            acceptedFiles={acceptedFiles}
+            handleFileSelect={handleFileSelect}
+            inputValue={inputValue}
+          />
+        ))}
       <CropDialog
         fileUrl={fileForUpload}
         isOpen={isCropDialogOpen}

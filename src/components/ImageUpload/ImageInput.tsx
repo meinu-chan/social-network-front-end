@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   rootNormal: {
     width: '100%',
-    height: 250,
+    height: 400,
   },
   rootSmall: {
     width: 80,
@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   actionArea: {
     position: 'relative',
     color: theme.palette.primary.main,
+    height: '100%',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.3)',
       cursor: 'pointer',
@@ -107,7 +108,7 @@ const ImageInput = (props: IProps) => {
         [classes.disabled]: disabled,
       })}
     >
-      <Tooltip title={'Select file'}>
+      <Tooltip title={'Select photo'}>
         <CardActionArea
           component="label"
           className={classes.actionArea}

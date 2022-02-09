@@ -10,6 +10,7 @@ const ENDPOINTS = {
   GENERATE_PUT_URL: `${PREFIX}/aws/generate-put-url`,
 
   GET_ME: `${PREFIX}/users/me`,
+  UPDATE_ME: `${PREFIX}/users/me`,
 };
 
 export default ENDPOINTS;

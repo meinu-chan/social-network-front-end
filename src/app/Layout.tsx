@@ -48,14 +48,12 @@ function Layout() {
               <Route path={appLinks.auth.link} element={<Authentication />} />
               <Route path={appLinks.index.link} element={<Home />} />
 
-              <Route path={appLinks.signUp2.link} element={<SignUpStep2 />} />
-
-              {/* <Route
+              <Route
                 path={appLinks.signUp2.link}
                 element={<PrivateRoute isAuthenticated={isAuth} />}
               >
                 <Route path={appLinks.signUp2.link} element={<SignUpStep2 />} />
-              </Route> */}
+              </Route>
 
               <Route path="*" element={<NotFound />} />
             </Routes>

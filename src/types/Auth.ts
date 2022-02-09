@@ -16,6 +16,10 @@ export interface IAuthSignUpParams {
   email: string;
   password: string;
 }
+export interface IAuthSignUpStep2Params {
+  photo?: string;
+  nickname?: string;
+}
 
 export interface IAuthData {
   accessToken: string;
