@@ -5,12 +5,12 @@ interface IConfig {
   showSuccessMessage: boolean;
 }
 
-export const useApiRequest = (fetcher: any, config?: IConfig) => {
+export function useApiRequest<T = any>(fetcher: (...args: any[]) => Promise<T>, config?: IConfig) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(undefined);
-  const [data, setData] = useState(undefined);
+  const [data, setData] = useState<T | undefined>(undefined);
 
   const requestFn = useCallback(
     async (params) => {
@@ -48,6 +48,6 @@ export const useApiRequest = (fetcher: any, config?: IConfig) => {
     isLoading,
     requestFn,
   };
-};
+}
 
 export default useApiRequest;

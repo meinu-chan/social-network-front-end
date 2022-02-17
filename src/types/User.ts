@@ -15,6 +15,11 @@ export interface IUser {
   createdAt: Date;
 }
 
+export interface UserData extends Omit<IUser, 'password' | 'createdAt' | 'updatedAt'> {
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type UpdateUserParams = Partial<Pick<IUser, 'fullName' | 'nickname' | 'photo'>>;
 
-export type UserGetMeResponse = Promise<Omit<IUser, 'password'>>;
+export type UserGetMeResponse = Promise<UserData>;

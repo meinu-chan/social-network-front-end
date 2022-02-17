@@ -7,10 +7,6 @@ import { isEmptyString, isValidEmail, isValidPassword } from '../../../helpers/v
 import useModel from '../../../hooks/useModel';
 import useApiRequest from '../../../hooks/userApiRequest';
 import { IAuthProps } from '..';
-import { IAction as UserReducerAction } from '../../../store/reducers/userReducer';
-import { Dispatch } from 'redux';
-import { useDispatch } from 'react-redux';
-import { authUser, logOutUser } from '../../../store/actions/userReducer';
 import Loader from '../../../components/Loader';
 import {
   setApiAuthorizationHeader,
@@ -19,6 +15,8 @@ import {
 } from '../../../api/apiClient';
 import { useNavigate } from 'react-router-dom';
 import { appLinks } from '../../../router/routes';
+import { useAppContext } from '../../../store';
+import { logOutUser, authUser, setUserData } from '../../../store/actions';
 
 const initialModel = {
   email: '',
@@ -36,7 +34,7 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
     showSuccessMessage: false,
   });
 
-  const dispatch = useDispatch<Dispatch<UserReducerAction>>();
+  const { dispatch } = useAppContext();
   const navigate = useNavigate();
 
   const [model, handleModelChange] = useModel(initialModel);
@@ -59,10 +57,11 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
         createApiClientRequestInterceptor(() => dispatch(logOutUser()));
         createApiClientResponseInterceptor(() => dispatch(logOutUser()));
 
-        dispatch(authUser(res.user));
+        dispatch(authUser(true));
+        dispatch(setUserData(res.user));
         success = true;
       }
-      if (success) navigate(appLinks.signUp2.link);
+      if (success) navigate(appLinks.index.link);
     } else {
       setIsError(true);
     }
