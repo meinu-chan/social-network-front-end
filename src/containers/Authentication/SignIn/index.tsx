@@ -1,7 +1,5 @@
 import { Typography, Box, FormControl, TextField, Button } from '@mui/material';
 import React, { FormEvent } from 'react';
-import { useDispatch } from 'react-redux';
-import { Dispatch } from 'redux';
 import { IAuthProps } from '..';
 import {
   setApiAuthorizationHeader,
@@ -14,10 +12,10 @@ import isValidSignInData from '../../../helpers/FormDataValidations/isValidSignI
 import { isValidEmail, isValidPassword } from '../../../helpers/validations';
 import useModel from '../../../hooks/useModel';
 import useApiRequest from '../../../hooks/userApiRequest';
-import { authUser, logOutUser } from '../../../store/actions/userReducer';
-import { IAction as UserReducerAction } from '../../../store/reducers/userReducer';
 import { useNavigate } from 'react-router-dom';
 import { appLinks } from '../../../router/routes';
+import { useAppContext } from '../../../store';
+import { logOutUser, authUser, setUserData } from '../../../store/actions';
 
 const initialModel = {
   email: '',
@@ -30,7 +28,7 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
     mb: '5px',
   };
 
-  const dispatch = useDispatch<Dispatch<UserReducerAction>>();
+  const { dispatch } = useAppContext();
   const { requestFn: signInApi } = useApiRequest(signIn);
   const navigate = useNavigate();
 
@@ -52,7 +50,8 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
         createApiClientRequestInterceptor(() => dispatch(logOutUser()));
         createApiClientResponseInterceptor(() => dispatch(logOutUser()));
 
-        dispatch(authUser(res.user));
+        dispatch(authUser(true));
+        dispatch(setUserData(res.user));
       }
 
       navigate(appLinks.index.link);

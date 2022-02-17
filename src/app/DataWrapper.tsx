@@ -6,10 +6,10 @@ import {
   setApiAuthorizationHeader,
 } from '../api/apiClient';
 import { refreshToken } from '../api/authApi';
-import { useDispatch } from 'react-redux';
 import Loader from '../components/Loader';
-import { authUser, logOutUser } from '../store/actions/userReducer';
 import { getMe } from '../api/userApi';
+import { useAppContext } from '../store';
+import { logOutUser, authUser, setUserData } from '../store/actions';
 
 interface IProps {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ interface IProps {
 
 const DataWrapper = ({ children }: IProps) => {
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
+  const { dispatch } = useAppContext();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,7 +31,8 @@ const DataWrapper = ({ children }: IProps) => {
 
         const res = await getMe();
 
-        authUser(res);
+        authUser(true);
+        setUserData(res);
       }
     } catch (e: any) {
       if (e?.response?.status !== 404)

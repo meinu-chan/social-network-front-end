@@ -1,15 +1,10 @@
 import React from 'react';
 import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
-import { IRootReducerState } from '../../store';
+import { useAppContext } from '../../store';
 import { AccountCircle } from '@mui/icons-material';
 
-type IReducerSelectedData = IRootReducerState['userReducer'];
-
 function Header() {
-  const userData = useSelector<IRootReducerState, IReducerSelectedData>(
-    ({ userReducer }) => userReducer
-  );
+  const { state } = useAppContext();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -27,7 +22,7 @@ function Header() {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Social Network
         </Typography>
-        {userData.isAuth && (
+        {state.isAuth && (
           <div>
             <IconButton
               size="large"

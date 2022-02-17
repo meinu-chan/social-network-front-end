@@ -1,4 +1,4 @@
-import { IUser } from './User';
+import { UserData } from './User';
 
 export interface IParsedJwtToken {
   exp: number;
@@ -16,14 +16,10 @@ export interface IAuthSignUpParams {
   email: string;
   password: string;
 }
-export interface IAuthSignUpStep2Params {
-  photo?: string;
-  nickname?: string;
-}
 
 export interface IAuthData {
   accessToken: string;
-  user: IUser;
+  user: UserData;
 }
 
 export interface IAuthRefreshTokenData {
