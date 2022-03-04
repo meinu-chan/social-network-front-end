@@ -1,10 +1,67 @@
 import React from 'react';
-import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import {
+  AppBar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Theme,
+  Toolbar,
+  Typography,
+  Box,
+  Tooltip,
+  Avatar,
+} from '@mui/material';
 import { useAppContext } from '../../store';
-import { AccountCircle } from '@mui/icons-material';
+import { makeStyles } from '@mui/styles';
+import { useImageSrc } from '../../hooks/useImageSrc';
+import { appLinks } from '../../router/routes';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
+
+const useStyles = makeStyles((theme: Theme) => ({
+  logoBox: {
+    flexGrow: 1,
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  logo: {
+    cursor: 'pointer',
+    textDecoration: 'none',
+    color: 'inherit',
+  },
+  avatar: {
+    maxWidth: '5%',
+    height: '5%',
+  },
+  iconButton: {
+    backgroundColor: `${theme.palette.background.paper} !important`,
+    padding: '0 !important',
+  },
+  settingItem: {
+    marginLeft: '6% !important',
+  },
+}));
+
+const dropDownSettings = [
+  {
+    icon: <AccountCircleIcon />,
+    field: 'My profile',
+  },
+  {
+    icon: <SettingsOutlinedIcon />,
+    field: 'Settings',
+  },
+  {
+    icon: <LogoutIcon />,
+    field: 'Log out',
+  },
+];
 
 function Header() {
+  const classes = useStyles();
   const { state } = useAppContext();
+  const avatarSrc = useImageSrc(state.user.photo);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -19,22 +76,25 @@ function Header() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Social Network
-        </Typography>
+        <Box className={classes.logoBox}>
+          <Typography
+            variant="h6"
+            component="a"
+            href={`${appLinks.index.link}${state.user._id}`}
+            className={classes.logo}
+          >
+            Social Network
+          </Typography>
+        </Box>
         {state.isAuth && (
-          <div>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="User profile">
+              <IconButton onClick={handleMenu} className={classes.iconButton}>
+                <Avatar alt={state.user.fullName} src={avatarSrc} />
+              </IconButton>
+            </Tooltip>
             <Menu
+              sx={{ mt: '45px' }}
               id="menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
@@ -49,10 +109,16 @@ function Header() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
+              {dropDownSettings.map((setting, i) => (
+                <MenuItem key={setting.field} onClick={handleClose}>
+                  {setting.icon}
+                  <Typography textAlign="center" className={classes.settingItem}>
+                    {setting.field}
+                  </Typography>
+                </MenuItem>
+              ))}
             </Menu>
-          </div>
+          </Box>
         )}
       </Toolbar>
     </AppBar>

@@ -10,7 +10,12 @@ const reducer = (state: AppStateContext, action: AppActions): AppStateContext =>
     case AppActionEnums.SET_USER_DATA:
       return {
         ...state,
-        user: action.payload,
+        user: { ...state.user, ...action.payload },
+      };
+    case AppActionEnums.SET_CURRENT_USER_DATA:
+      return {
+        ...state,
+        currentUser: { ...state.currentUser, ...action.payload },
       };
     case AppActionEnums.LOG_OUT_USER:
       return {

@@ -10,6 +10,7 @@ const ENDPOINTS = {
   GENERATE_PUT_URL: `${PREFIX}/aws/generate-put-url`,
 
   GET_ME: `${PREFIX}/users/me`,
+  GET_USER_BY_ID: (id: string) => `${PREFIX}/users/${id}`,
   UPDATE_ME: `${PREFIX}/users/me`,
 };
 
