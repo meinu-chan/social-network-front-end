@@ -1,5 +1,5 @@
 import React, { FormEvent } from 'react';
-import { Box, Typography, FormControl, TextField, Button } from '@mui/material';
+import { Box, Typography, FormControl, TextField, Button, Theme } from '@mui/material';
 import { signUp } from '../../../api/authApi';
 import PasswordInput from '../../../components/Form/PasswordInput';
 import isValidSignUpData from '../../../helpers/FormDataValidations/isValidSignUpData';
@@ -17,6 +17,13 @@ import { useNavigate } from 'react-router-dom';
 import { appLinks } from '../../../router/routes';
 import { useAppContext } from '../../../store';
 import { logOutUser, authUser, setUserData } from '../../../store/actions';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles((theme: Theme) => ({
+  formControl: {
+    margin: '5px 0 !important',
+  },
+}));
 
 const initialModel = {
   email: '',
@@ -25,10 +32,7 @@ const initialModel = {
 };
 
 function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps) {
-  const style = {
-    mt: '5px',
-    mb: '5px',
-  };
+  const classes = useStyles();
 
   const { requestFn: signUpApi, isLoading } = useApiRequest(signUp, {
     showSuccessMessage: false,
@@ -61,7 +65,7 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
         dispatch(setUserData(res.user));
         success = true;
       }
-      if (success) navigate(appLinks.index.link);
+      if (success) navigate(`${appLinks.index.link}${res.user._id}`);
     } else {
       setIsError(true);
     }
@@ -74,7 +78,7 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
         {authType}
       </Typography>
       <Box component="form" onSubmit={handleSubmit}>
-        <FormControl fullWidth sx={style}>
+        <FormControl fullWidth className={classes.formControl}>
           <TextField
             disabled={isLoading}
             variant="outlined"
@@ -85,7 +89,7 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
             helperText={isError && isEmptyString(model.fullName) && 'Invalid Full Name'}
           />
         </FormControl>
-        <FormControl fullWidth sx={style}>
+        <FormControl fullWidth className={classes.formControl}>
           <TextField
             disabled={isLoading}
             variant="outlined"
@@ -96,7 +100,7 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
             helperText={isError && !isValidEmail(model.email) && 'Invalid Email'}
           />
         </FormControl>
-        <FormControl fullWidth sx={style}>
+        <FormControl fullWidth className={classes.formControl}>
           <PasswordInput
             disabled={isLoading}
             variant="outlined"

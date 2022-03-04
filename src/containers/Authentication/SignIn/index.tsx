@@ -1,4 +1,4 @@
-import { Typography, Box, FormControl, TextField, Button } from '@mui/material';
+import { Typography, Box, FormControl, TextField, Button, Theme } from '@mui/material';
 import React, { FormEvent } from 'react';
 import { IAuthProps } from '..';
 import {
@@ -16,6 +16,13 @@ import { useNavigate } from 'react-router-dom';
 import { appLinks } from '../../../router/routes';
 import { useAppContext } from '../../../store';
 import { logOutUser, authUser, setUserData } from '../../../store/actions';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles((theme: Theme) => ({
+  formControl: {
+    margin: '5px 0 !important',
+  },
+}));
 
 const initialModel = {
   email: '',
@@ -23,10 +30,7 @@ const initialModel = {
 };
 
 function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps) {
-  const style = {
-    mt: '5px',
-    mb: '5px',
-  };
+  const classes = useStyles();
 
   const { dispatch } = useAppContext();
   const { requestFn: signInApi } = useApiRequest(signIn);
@@ -54,7 +58,7 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
         dispatch(setUserData(res.user));
       }
 
-      navigate(appLinks.index.link);
+      navigate(`${appLinks.index.link}${res.user._id}`);
     } else {
       setIsError(true);
     }
@@ -66,7 +70,7 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
         {authType}
       </Typography>
       <Box component="form" onSubmit={handleSubmit}>
-        <FormControl fullWidth sx={style}>
+        <FormControl fullWidth className={classes.formControl}>
           <TextField
             variant="outlined"
             label="Enter your email"
@@ -76,7 +80,7 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
             helperText={isError && !isValidEmail(model.email) && 'Invalid Email'}
           />
         </FormControl>
-        <FormControl fullWidth sx={style}>
+        <FormControl fullWidth className={classes.formControl}>
           <PasswordInput
             variant="outlined"
             label="Enter your password"

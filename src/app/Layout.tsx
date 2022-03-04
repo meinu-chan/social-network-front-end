@@ -1,15 +1,20 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { Suspense, useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Loader from '../components/Loader';
 import Authentication from '../containers/Authentication';
-import Home from '../containers/Home';
+import User from '../containers/User';
 import { scrollToTop } from '../helpers/common';
 import NotFound from '../router/NotFound';
 import PrivateRoute from '../router/PrivateRoute';
 import { appLinks } from '../router/routes';
 import { useAppContext } from '../store';
+
+interface IPrivateRoute {
+  path: string;
+  element: JSX.Element;
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -27,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const privateRoutes = [{ path: appLinks.index.link, element: <Home /> }];
+const privateRoutes: IPrivateRoute[] = [];
 
 function Layout() {
   const classes = useStyles();
@@ -47,10 +52,12 @@ function Layout() {
           <div className={classes.toolbar} />
           <BrowserRouter>
             <Routes>
+              <Route path="/" element={<Navigate to={appLinks.auth.link} />} />
               <Route path={appLinks.auth.link} element={<Authentication />} />
+              <Route path={`${appLinks.index.link}:userId`} element={<User />} />
 
               {privateRoutes.map(({ path, element }) => (
-                <Route path={path} element={<PrivateRoute isAuthenticated={isAuth} />}>
+                <Route path={path} key={path} element={<PrivateRoute isAuthenticated={isAuth} />}>
                   <Route path={path} element={element} />
                 </Route>
               ))}
