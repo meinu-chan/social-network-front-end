@@ -151,7 +151,7 @@ const ImageUpload = (props: IProps) => {
         isOpen={isCropDialogOpen}
         onClose={() => setIsCropDialogOpen(false)}
         onSubmit={handleUpload}
-        cropSetting={cropSettings}
+        // cropSetting={cropSettings}
       />
     </>
   );

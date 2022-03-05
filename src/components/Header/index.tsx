@@ -83,7 +83,7 @@ function Header() {
             href={`${appLinks.index.link}${state.user._id}`}
             className={classes.logo}
           >
-            Social Network
+            {'Social Network'}
           </Typography>
         </Box>
         {state.isAuth && (
