@@ -16,6 +16,10 @@ const appLinks: IAppLinks = {
     name: 'Auth Page',
     link: '/auth',
   },
+  setting: {
+    name: 'Setting Page',
+    link: '/setting',
+  },
 };
 
 export { appLinks };

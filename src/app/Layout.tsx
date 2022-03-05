@@ -4,6 +4,7 @@ import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Loader from '../components/Loader';
 import Authentication from '../containers/Authentication';
+import Setting from '../containers/Setting';
 import User from '../containers/User';
 import { scrollToTop } from '../helpers/common';
 import NotFound from '../router/NotFound';
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const privateRoutes: IPrivateRoute[] = [];
+const privateRoutes: IPrivateRoute[] = [{ path: appLinks.setting.link, element: <Setting /> }];
 
 function Layout() {
   const classes = useStyles();
