@@ -41,17 +41,23 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (file: BlobWithName) => void;
-  cropSetting?: Crop;
 }
 
 const CropDialog: React.FC<Props> = (props: Props) => {
-  const { onClose, isOpen, fileUrl, onSubmit, cropSetting } = props;
+  const { onClose, isOpen, fileUrl, onSubmit } = props;
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   const initialCrop: Crop = useMemo(
-    () => cropSetting || { unit: '%', width: 50, height: 50, aspect: 1, x: 0, y: 0 },
-    [cropSetting]
+    () => ({
+      unit: '%',
+      width: 50,
+      height: 50,
+      aspect: 1,
+      x: 0,
+      y: 0,
+    }),
+    []
   );
 
   const imgRef = useRef<HTMLImageElement | null>(null);
