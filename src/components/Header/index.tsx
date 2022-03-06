@@ -18,6 +18,11 @@ import { appLinks } from '../../router/routes';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router-dom';
+import useApiRequest from '../../hooks/userApiRequest';
+import { logout } from '../../api/authApi';
+import { logOutUser } from '../../store/actions';
+import Loader from '../Loader';
 
 const useStyles = makeStyles((theme: Theme) => ({
   logoBox: {
@@ -43,25 +48,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const dropDownSettings = [
-  {
-    icon: <AccountCircleIcon />,
-    field: 'My profile',
-  },
-  {
-    icon: <SettingsOutlinedIcon />,
-    field: 'Settings',
-  },
-  {
-    icon: <LogoutIcon />,
-    field: 'Log out',
-  },
-];
-
 function Header() {
   const classes = useStyles();
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
   const avatarSrc = useImageSrc(state.user.photo);
+  const navigate = useNavigate();
+  const { requestFn: logoutApi, isLoading } = useApiRequest(logout, {
+    showSuccessMessage: false,
+  });
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -73,55 +67,87 @@ function Header() {
     setAnchorEl(null);
   };
 
+  const dropDownSettings = [
+    {
+      icon: <AccountCircleIcon />,
+      field: 'My profile',
+      onClick: () => {
+        handleClose();
+        navigate(`${appLinks.index.link}${state.user._id}`);
+      },
+    },
+    {
+      icon: <SettingsOutlinedIcon />,
+      field: 'Settings',
+      onClick: () => {
+        handleClose();
+        navigate(appLinks.setting.link);
+      },
+    },
+    {
+      icon: <LogoutIcon />,
+      field: 'Log out',
+      onClick: async () => {
+        await logoutApi({});
+        dispatch(logOutUser());
+        handleClose();
+        navigate(appLinks.auth.link);
+      },
+    },
+  ];
+
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Box className={classes.logoBox}>
-          <Typography
-            variant="h6"
-            component="a"
-            href={`${appLinks.index.link}${state.user._id}`}
-            className={classes.logo}
-          >
-            {'Social Network'}
-          </Typography>
-        </Box>
-        {state.isAuth && (
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="User profile">
-              <IconButton onClick={handleMenu} className={classes.iconButton}>
-                <Avatar alt={state.user.fullName} src={avatarSrc} />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+    <>
+      {isLoading && <Loader fullScreen />}
+      <AppBar position="static">
+        <Toolbar>
+          <Box className={classes.logoBox}>
+            <Typography
+              variant="h6"
+              component="a"
+              href={`${appLinks.index.link}${state.user._id}`}
+              className={classes.logo}
             >
-              {dropDownSettings.map((setting, i) => (
-                <MenuItem key={setting.field} onClick={handleClose}>
-                  {setting.icon}
-                  <Typography textAlign="center" className={classes.settingItem}>
-                    {setting.field}
-                  </Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+              {'Social Network'}
+            </Typography>
           </Box>
-        )}
-      </Toolbar>
-    </AppBar>
+          {state.isAuth && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="User profile">
+                <IconButton onClick={handleMenu} className={classes.iconButton}>
+                  <Avatar alt={state.user.fullName} src={avatarSrc} />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                {dropDownSettings.map((setting, i) => (
+                  <MenuItem key={setting.field} onClick={setting.onClick} disabled={isLoading}>
+                    {setting.icon}
+                    <Typography textAlign="center" className={classes.settingItem}>
+                      {setting.field}
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          )}
+        </Toolbar>
+      </AppBar>
+    </>
   );
 }
 

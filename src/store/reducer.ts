@@ -1,3 +1,4 @@
+import { initialState } from '.';
 import { AppStateContext, AppActions, AppActionEnums } from './types';
 
 const reducer = (state: AppStateContext, action: AppActions): AppStateContext => {
@@ -5,7 +6,8 @@ const reducer = (state: AppStateContext, action: AppActions): AppStateContext =>
     case AppActionEnums.AUTH_USER:
       return {
         ...state,
-        isAuth: action.payload,
+        isAuth: true,
+        user: { ...state.user, ...action.payload },
       };
     case AppActionEnums.SET_USER_DATA:
       return {
@@ -18,10 +20,7 @@ const reducer = (state: AppStateContext, action: AppActions): AppStateContext =>
         currentUser: { ...state.currentUser, ...action.payload },
       };
     case AppActionEnums.LOG_OUT_USER:
-      return {
-        ...state,
-        isAuth: false,
-      };
+      return initialState;
 
     default:
       return state;

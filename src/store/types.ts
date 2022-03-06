@@ -21,7 +21,7 @@ export enum AppActionEnums {
 
 interface AuthUser {
   type: AppActionEnums.AUTH_USER;
-  payload: boolean;
+  payload: UserData;
 }
 
 interface SetUserData {

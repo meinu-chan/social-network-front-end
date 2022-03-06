@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import DataWrapper from './app/DataWrapper';
 import Layout from './app/Layout';
 import SwrConfigWrapper from './app/SWRConfigWrapper';
@@ -11,10 +12,12 @@ function App() {
     <SwrConfigWrapper>
       <AppStoreProvider>
         <Theme>
-          <Header />
-          <DataWrapper>
-            <Layout />
-          </DataWrapper>
+          <BrowserRouter>
+            <Header />
+            <DataWrapper>
+              <Layout />
+            </DataWrapper>
+          </BrowserRouter>
         </Theme>
       </AppStoreProvider>
     </SwrConfigWrapper>

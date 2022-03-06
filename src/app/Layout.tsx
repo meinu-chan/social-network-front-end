@@ -1,7 +1,7 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { Suspense, useEffect } from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Loader from '../components/Loader';
 import Authentication from '../containers/Authentication';
 import Setting from '../containers/Setting';
@@ -51,21 +51,19 @@ function Layout() {
       <div className={classes.root}>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Navigate to={appLinks.auth.link} />} />
-              <Route path={appLinks.auth.link} element={<Authentication />} />
-              <Route path={`${appLinks.index.link}:userId`} element={<User />} />
+          <Routes>
+            <Route path="/" element={<Navigate to={appLinks.auth.link} />} />
+            <Route path={appLinks.auth.link} element={<Authentication />} />
+            <Route path={`${appLinks.index.link}:userId`} element={<User />} />
 
-              {privateRoutes.map(({ path, element }) => (
-                <Route path={path} key={path} element={<PrivateRoute isAuthenticated={isAuth} />}>
-                  <Route path={path} element={element} />
-                </Route>
-              ))}
+            {privateRoutes.map(({ path, element }) => (
+              <Route path={path} key={path} element={<PrivateRoute isAuthenticated={isAuth} />}>
+                <Route path={path} element={element} />
+              </Route>
+            ))}
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </main>
       </div>
     </Suspense>

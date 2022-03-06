@@ -61,7 +61,7 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
         createApiClientRequestInterceptor(() => dispatch(logOutUser()));
         createApiClientResponseInterceptor(() => dispatch(logOutUser()));
 
-        dispatch(authUser(true));
+        dispatch(authUser(res.user));
         dispatch(setUserData(res.user));
         success = true;
       }

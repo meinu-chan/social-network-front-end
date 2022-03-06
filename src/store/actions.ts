@@ -1,9 +1,9 @@
 import { UserData } from '../types/User';
 import { AppActionEnums, AppActions } from './types';
 
-const authUser = (isAuth: boolean): AppActions => ({
+const authUser = (data: UserData): AppActions => ({
   type: AppActionEnums.AUTH_USER,
-  payload: isAuth,
+  payload: data,
 });
 
 const setUserData = (data: UserData): AppActions => ({

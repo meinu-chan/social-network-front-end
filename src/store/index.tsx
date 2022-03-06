@@ -3,7 +3,7 @@ import { UserRole } from '../types/User';
 import reducer from './reducer';
 import { AppStateContext, IAppContext } from './types';
 
-const initialState: AppStateContext = {
+export const initialState: AppStateContext = {
   isAuth: false,
   user: {
     _id: '',
