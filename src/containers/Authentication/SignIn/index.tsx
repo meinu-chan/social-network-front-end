@@ -15,7 +15,7 @@ import useApiRequest from '../../../hooks/userApiRequest';
 import { useNavigate } from 'react-router-dom';
 import { appLinks } from '../../../router/routes';
 import { useAppContext } from '../../../store';
-import { logOutUser, authUser, setUserData } from '../../../store/actions';
+import { logOutUser, authUser } from '../../../store/actions';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -54,8 +54,7 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
         createApiClientRequestInterceptor(() => dispatch(logOutUser()));
         createApiClientResponseInterceptor(() => dispatch(logOutUser()));
 
-        dispatch(authUser(true));
-        dispatch(setUserData(res.user));
+        dispatch(authUser(res.user));
       }
 
       navigate(`${appLinks.index.link}${res.user._id}`);

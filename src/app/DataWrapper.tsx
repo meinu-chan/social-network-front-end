@@ -9,7 +9,7 @@ import { refreshToken } from '../api/authApi';
 import Loader from '../components/Loader';
 import { getMe } from '../api/userApi';
 import { useAppContext } from '../store';
-import { logOutUser, authUser, setUserData } from '../store/actions';
+import { logOutUser, authUser } from '../store/actions';
 
 interface IProps {
   children: React.ReactNode;
@@ -31,8 +31,9 @@ const DataWrapper = ({ children }: IProps) => {
 
         const res = await getMe();
 
-        dispatch(authUser(true));
-        dispatch(setUserData(res));
+        console.log(res);
+
+        dispatch(authUser(res));
       }
     } catch (e: any) {
       if (e?.response?.status !== 404)
