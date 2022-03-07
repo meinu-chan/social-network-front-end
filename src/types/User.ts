@@ -11,6 +11,7 @@ export interface IUser {
   role: UserRole;
   nickname?: string;
   photo: string;
+  backgroundAvatar: string;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -20,6 +21,8 @@ export interface UserData extends Omit<IUser, 'password' | 'createdAt' | 'update
   updatedAt: string;
 }
 
-export type UpdateUserParams = Partial<Pick<IUser, 'fullName' | 'nickname' | 'photo'>>;
+export type UpdateUserParams = Partial<
+  Pick<IUser, 'fullName' | 'nickname' | 'photo' | 'backgroundAvatar'>
+>;
 
 export type GetUserResponse = Promise<UserData>;

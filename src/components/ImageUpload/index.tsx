@@ -146,13 +146,13 @@ const ImageUpload = (props: IProps) => {
             inputValue={inputValue}
           />
         ))}
-      <CropDialog
+      {/* <CropDialog
         fileUrl={fileForUpload}
         isOpen={isCropDialogOpen}
         onClose={() => setIsCropDialogOpen(false)}
         onSubmit={handleUpload}
         // cropSetting={cropSettings}
-      />
+      /> */}
     </>
   );
 };

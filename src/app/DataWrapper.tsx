@@ -31,8 +31,6 @@ const DataWrapper = ({ children }: IProps) => {
 
         const res = await getMe();
 
-        console.log(res);
-
         dispatch(authUser(res));
       }
     } catch (e: any) {
