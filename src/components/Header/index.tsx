@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: '5%',
   },
   iconButton: {
-    backgroundColor: `${theme.palette.background.paper} !important`,
+    backgroundColor: `#FFFFFF !important`,
     padding: '0 !important',
   },
   settingItem: {

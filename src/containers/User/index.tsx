@@ -7,6 +7,7 @@ import Loader from '../../components/Loader';
 import useApiRequest from '../../hooks/userApiRequest';
 import { useAppContext } from '../../store';
 import { setCurrentUserData } from '../../store/actions';
+import ProfileAvatar from '../../components/ProfileAvatar';
 
 function User() {
   const { userId } = useParams();
@@ -33,9 +34,11 @@ function User() {
     <>
       {isLoading && <Loader fullScreen />}
       <Container>
-        <Grid container direction="column">
+        <Grid container wrap="nowrap" direction="column">
           <Grid item>
-            <UserAvatar />
+            <ProfileAvatar>
+              <UserAvatar />
+            </ProfileAvatar>
           </Grid>
           <Grid item>
             <Typography align="center" variant="h4">

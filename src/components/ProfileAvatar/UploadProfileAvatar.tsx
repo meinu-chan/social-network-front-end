@@ -1,6 +1,5 @@
-import { IconButton, Theme, CircularProgress } from '@mui/material';
+import { Theme, CircularProgress, IconButton } from '@mui/material';
 import React, { useMemo, useState } from 'react';
-import UpgradeIcon from '@mui/icons-material/Upgrade';
 import { makeStyles } from '@mui/styles';
 import { useSnackbar } from 'notistack';
 import CropDialog from '../CropDialog';
@@ -11,12 +10,13 @@ import { useAppContext } from '../../store';
 import useApiRequest from '../../hooks/userApiRequest';
 import { updateMe } from '../../api/userApi';
 import { setCurrentUserData, setUserData } from '../../store/actions';
+import UpgradeIcon from '@mui/icons-material/Upgrade';
 import { Crop } from 'react-image-crop';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  updatePhoto: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
-    color: `${theme.palette.background.paper} !important`,
+  uploadBtn: {
+    position: 'absolute',
+    backgroundColor: '#ffffff !important',
   },
   input: {
     visibility: 'hidden',
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: 0,
   },
   loader: {
-    color: '#ffffff !important',
+    color: theme.palette.primary.main,
   },
   centered: {
     position: 'absolute',
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-function UploadAvatar() {
+function UploadProfileAvatar() {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const { dispatch } = useAppContext();
@@ -46,13 +46,21 @@ function UploadAvatar() {
   const [fileForUpload, setFileForUpload] = useState('');
   const [isCropDialogOpen, setIsCropDialogOpen] = useState(false);
 
+  const imageMinValue = useMemo(
+    () => ({
+      height: 400,
+      width: 850,
+    }),
+    []
+  );
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const image = new Image();
       const file = e.target.files[0];
 
       image.onload = () => {
-        if (image.width < 200 || image.height < 250) {
+        if (image.width < imageMinValue.width || image.height < imageMinValue.height) {
           enqueueSnackbar(
             `Minimal image size is ${imageMinValue.width}x${imageMinValue.height} pixels.`,
             { variant: 'error' }
@@ -77,7 +85,7 @@ function UploadAvatar() {
   };
 
   const handleUpload = async (file: BlobWithName | File) => {
-    const key = `user/avatar/${file.name}`;
+    const key = `user/bg-avatar/${file.name}`;
 
     setIsUploading(true);
     setIsCropDialogOpen(false);
@@ -100,7 +108,7 @@ function UploadAvatar() {
         },
       });
 
-      const user = await updateMeApi({ args: { photo: key } });
+      const user = await updateMeApi({ args: { backgroundAvatar: key } });
 
       dispatch(setUserData(user));
       dispatch(setCurrentUserData(user));
@@ -117,29 +125,21 @@ function UploadAvatar() {
 
   const acceptedFiles = 'image/jpeg, image/png';
 
-  const imageMinValue = useMemo(
-    () => ({
-      height: 250,
-      width: 200,
-    }),
-    []
-  );
-
   const cropSettings: Crop = useMemo(
     () => ({
-      unit: 'px',
-      width: imageMinValue.width,
-      height: imageMinValue.height,
+      unit: '%',
+      width: 100,
+      height: 50,
       aspect: 1,
       x: 0,
       y: 0,
     }),
-    [imageMinValue]
+    []
   );
 
   return (
     <>
-      <IconButton className={classes.updatePhoto} component="label" disabled={isUploading}>
+      <IconButton className={classes.uploadBtn} component="label" disabled={isUploading}>
         <UpgradeIcon />
         <span className={classes.centered}>
           {isUploading && uploadProgress === 0 && (
@@ -158,12 +158,14 @@ function UploadAvatar() {
         fileUrl={fileForUpload}
         onClose={() => setIsCropDialogOpen(false)}
         onSubmit={handleUpload}
+        cropSettings={cropSettings}
         minHeight={imageMinValue.height}
         minWidth={imageMinValue.width}
-        cropSettings={cropSettings}
+        maxHeight={imageMinValue.height}
+        maxWidth={imageMinValue.width}
       />
     </>
   );
 }
 
-export default UploadAvatar;
+export default UploadProfileAvatar;

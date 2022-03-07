@@ -39,25 +39,31 @@ const useStyles = makeStyles({
 interface Props {
   fileUrl: string;
   isOpen: boolean;
+  cropSettings?: Crop;
+  minWidth: number;
+  minHeight: number;
+  maxWidth?: number;
+  maxHeight?: number;
   onClose: () => void;
   onSubmit: (file: BlobWithName) => void;
 }
 
 const CropDialog: React.FC<Props> = (props: Props) => {
-  const { onClose, isOpen, fileUrl, onSubmit } = props;
+  const { onClose, isOpen, fileUrl, onSubmit, cropSettings, ...rest } = props;
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   const initialCrop: Crop = useMemo(
-    () => ({
-      unit: '%',
-      width: 50,
-      height: 50,
-      aspect: 1,
-      x: 0,
-      y: 0,
-    }),
-    []
+    () =>
+      cropSettings || {
+        unit: '%',
+        width: 50,
+        height: 50,
+        aspect: 1,
+        x: 0,
+        y: 0,
+      },
+    [cropSettings]
   );
 
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -91,26 +97,25 @@ const CropDialog: React.FC<Props> = (props: Props) => {
     }
   }, [onSubmit, completedCrop, enqueueSnackbar]);
 
+  console.log(rest);
+
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="md">
       <DialogTitle className={classes.title}>
         <Typography variant="subtitle2">{'Select crop area'}</Typography>
         <IconButton onClick={onClose} color="primary" className={classes.closeButton}>
-          <CloseIcon />
+          <CloseIcon /> Cancel
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.cropContainer}>
         <ReactCrop
           keepSelection
-          minWidth={200}
-          minHeight={200}
-          maxHeight={400}
-          maxWidth={400}
           src={fileUrl}
           onImageLoaded={onLoad}
           crop={crop}
           onChange={(c) => setCrop(c)}
           onComplete={(c) => setCompletedCrop(c)}
+          {...rest}
         />
       </DialogContent>
       <DialogActions className={classes.actions}>
