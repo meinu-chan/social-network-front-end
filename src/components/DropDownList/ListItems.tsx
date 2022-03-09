@@ -3,11 +3,11 @@ import React from 'react';
 import { useImageSrc } from '../../hooks/useImageSrc';
 import { UserData } from '../../types/User';
 
-interface IProps extends UserData {
+interface IProps extends Pick<UserData, 'fullName' | 'photo' | 'nickname'> {
   handleSelect: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-function ListItems({ fullName, _id, photo, nickname, handleSelect }: IProps) {
+function ListItems({ fullName, photo, nickname, handleSelect }: IProps) {
   const imageSrc = useImageSrc(photo || '');
 
   return (

@@ -21,6 +21,8 @@ const useStyle = makeStyles((theme: Theme) => ({
     width: '100%',
     backgroundColor: '#ffffff',
     color: '#000000',
+    maxHeight: 300,
+    overflow: 'auto',
   },
   listLoadNotFound: {
     display: 'flex',
