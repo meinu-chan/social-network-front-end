@@ -16,17 +16,6 @@ export const initialState: AppStateContext = {
     createdAt: '',
     updatedAt: '',
   },
-  currentUser: {
-    _id: '',
-    email: '',
-    fullName: '',
-    role: UserRole.user,
-    nickname: '',
-    photo: '',
-    backgroundAvatar: '',
-    createdAt: '',
-    updatedAt: '',
-  },
 };
 
 export const AppContext = createContext<IAppContext>({ state: initialState, dispatch: () => null });

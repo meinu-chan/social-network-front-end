@@ -10,7 +10,7 @@ import { generatePutUrl } from '../../api/awsApi';
 import { useAppContext } from '../../store';
 import useApiRequest from '../../hooks/userApiRequest';
 import { updateMe } from '../../api/userApi';
-import { setCurrentUserData, setUserData } from '../../store/actions';
+import { setUserData } from '../../store/actions';
 import { Crop } from 'react-image-crop';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -103,7 +103,6 @@ function UploadAvatar() {
       const user = await updateMeApi({ args: { photo: key } });
 
       dispatch(setUserData(user));
-      dispatch(setCurrentUserData(user));
     } catch (e) {
       console.log(e);
 

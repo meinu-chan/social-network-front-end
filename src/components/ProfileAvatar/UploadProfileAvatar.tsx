@@ -9,7 +9,7 @@ import { generatePutUrl } from '../../api/awsApi';
 import { useAppContext } from '../../store';
 import useApiRequest from '../../hooks/userApiRequest';
 import { updateMe } from '../../api/userApi';
-import { setCurrentUserData, setUserData } from '../../store/actions';
+import { setUserData } from '../../store/actions';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
 import { Crop } from 'react-image-crop';
 
@@ -111,7 +111,6 @@ function UploadProfileAvatar() {
       const user = await updateMeApi({ args: { backgroundAvatar: key } });
 
       dispatch(setUserData(user));
-      dispatch(setCurrentUserData(user));
     } catch (e) {
       console.log(e);
 
@@ -129,7 +128,7 @@ function UploadProfileAvatar() {
     () => ({
       unit: '%',
       width: 100,
-      height: 50,
+      height: 60,
       aspect: 1,
       x: 0,
       y: 0,

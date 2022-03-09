@@ -12,6 +12,7 @@ const ENDPOINTS = {
   GET_ME: `${PREFIX}/users/me`,
   GET_USER_BY_ID: (id: string) => `${PREFIX}/users/${id}`,
   UPDATE_ME: `${PREFIX}/users/me`,
+  NON_PAGINATED_LIST: `${PREFIX}/users/non-paginated`,
 };
 
 export default ENDPOINTS;
