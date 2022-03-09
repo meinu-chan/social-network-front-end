@@ -11,13 +11,8 @@ const setUserData = (data: UserData): AppActions => ({
   payload: data,
 });
 
-const setCurrentUserData = (data: UserData): AppActions => ({
-  type: AppActionEnums.SET_CURRENT_USER_DATA,
-  payload: data,
-});
-
 const logOutUser = (): AppActions => ({
   type: AppActionEnums.LOG_OUT_USER,
 });
 
-export { authUser, logOutUser, setUserData, setCurrentUserData };
+export { authUser, logOutUser, setUserData };

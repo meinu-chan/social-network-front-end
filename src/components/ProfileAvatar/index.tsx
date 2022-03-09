@@ -4,9 +4,10 @@ import { Box } from '@mui/system';
 import React from 'react';
 import { useImageSrc } from '../../hooks/useImageSrc';
 import { useAppContext } from '../../store';
+import { UserData } from '../../types/User';
 import UploadProfileAvatar from './UploadProfileAvatar';
 
-interface IProps {
+interface IProps extends Pick<UserData, '_id' | 'backgroundAvatar'> {
   children: JSX.Element;
 }
 
@@ -16,25 +17,33 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
   },
-  updateBtn: { marginLeft: '95% !important', transform: 'translate(0, 550%)' },
+  updateBtn: {
+    position: 'absolute',
+    marginTop: '9% !important',
+    marginLeft: '1% !important',
+  },
 }));
 
-function ProfileAvatar({ children }: IProps) {
+function ProfileAvatar({ children, _id, backgroundAvatar }: IProps) {
   const {
-    state: { currentUser },
+    state: { user },
   } = useAppContext();
   const bgAvatarSrc = useImageSrc(
-    currentUser.backgroundAvatar || process.env.REACT_APP_DEFAULT_BG_AVATAR_KEY || ''
+    backgroundAvatar || process.env.REACT_APP_DEFAULT_BG_AVATAR_KEY || ''
   );
 
   const classes = useStyles();
 
+  const isMe = user._id === _id;
+
   return (
     <Box sx={{ backgroundImage: `url(${bgAvatarSrc})` }} className={classes.box}>
       <Grid>
-        <Grid item className={classes.updateBtn}>
-          <UploadProfileAvatar />
-        </Grid>
+        {isMe && (
+          <Grid item className={classes.updateBtn}>
+            <UploadProfileAvatar />
+          </Grid>
+        )}
         <Grid item>{children}</Grid>
       </Grid>
     </Box>

@@ -3,7 +3,10 @@ import { makeStyles } from '@mui/styles';
 import React from 'react';
 import { useImageSrc } from '../../hooks/useImageSrc';
 import { useAppContext } from '../../store';
+import { UserData } from '../../types/User';
 import UploadAvatar from './UploadAvatar';
+
+type Props = Pick<UserData, '_id' | 'photo'>;
 
 const useStyles = makeStyles((theme: Theme) => ({
   box: {
@@ -20,14 +23,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-function UserAvatar() {
+function UserAvatar({ _id, photo }: Props) {
   const {
-    state: { currentUser, user },
+    state: { user },
   } = useAppContext();
   const classes = useStyles();
-  const avatarSrc = useImageSrc(currentUser.photo);
+  const avatarSrc = useImageSrc(photo || '');
 
-  const isMe = user._id === currentUser._id;
+  const isMe = user._id === _id;
 
   return (
     <Box className={classes.box}>

@@ -26,3 +26,5 @@ export type UpdateUserParams = Partial<
 >;
 
 export type GetUserResponse = Promise<UserData>;
+
+export type GetNonPaginatedUsersResponse = Promise<UserData[]>;

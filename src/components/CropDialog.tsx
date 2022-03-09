@@ -97,8 +97,6 @@ const CropDialog: React.FC<Props> = (props: Props) => {
     }
   }, [onSubmit, completedCrop, enqueueSnackbar]);
 
-  console.log(rest);
-
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="md">
       <DialogTitle className={classes.title}>

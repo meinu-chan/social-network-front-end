@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AppBar,
   IconButton,
@@ -18,15 +18,15 @@ import { appLinks } from '../../router/routes';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useApiRequest from '../../hooks/userApiRequest';
 import { logout } from '../../api/authApi';
 import { logOutUser } from '../../store/actions';
 import Loader from '../Loader';
+import SearchBar from './SearchBar';
 
 const useStyles = makeStyles((theme: Theme) => ({
   logoBox: {
-    flexGrow: 1,
     display: 'flex',
     justifyContent: 'flex-start',
   },
@@ -46,10 +46,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   settingItem: {
     marginLeft: '6% !important',
   },
+  searchBox: {
+    width: '30%',
+  },
 }));
 
 function Header() {
   const classes = useStyles();
+  const location = useLocation();
+  const [isAuthPage, setIsAuthPage] = useState(false);
   const { state, dispatch } = useAppContext();
   const avatarSrc = useImageSrc(state.user.photo);
   const navigate = useNavigate();
@@ -66,6 +71,10 @@ function Header() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    location.pathname === appLinks.auth.link ? setIsAuthPage(true) : setIsAuthPage(false);
+  }, [location.pathname]);
 
   const dropDownSettings = [
     {
@@ -100,7 +109,7 @@ function Header() {
     <>
       {isLoading && <Loader fullScreen />}
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Box className={classes.logoBox}>
             <Typography
               variant="h6"
@@ -111,39 +120,44 @@ function Header() {
               {'Social Network'}
             </Typography>
           </Box>
-          {state.isAuth && (
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="User profile">
-                <IconButton onClick={handleMenu} className={classes.iconButton}>
-                  <Avatar alt={state.user.fullName} src={avatarSrc} />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                {dropDownSettings.map((setting, i) => (
-                  <MenuItem key={setting.field} onClick={setting.onClick} disabled={isLoading}>
-                    {setting.icon}
-                    <Typography textAlign="center" className={classes.settingItem}>
-                      {setting.field}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
+          {!isAuthPage && state.isAuth && (
+            <>
+              <Box className={classes.searchBox}>
+                <SearchBar />
+              </Box>
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="User profile">
+                  <IconButton onClick={handleMenu} className={classes.iconButton}>
+                    <Avatar alt={state.user.fullName} src={avatarSrc} />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  {dropDownSettings.map((setting, i) => (
+                    <MenuItem key={setting.field} onClick={setting.onClick} disabled={isLoading}>
+                      {setting.icon}
+                      <Typography textAlign="center" className={classes.settingItem}>
+                        {setting.field}
+                      </Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+            </>
           )}
         </Toolbar>
       </AppBar>
