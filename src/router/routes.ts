@@ -12,9 +12,13 @@ const appLinks: IAppLinks = {
     name: 'Main Page',
     link: '/',
   },
-  auth: {
-    name: 'Auth Page',
-    link: '/auth',
+  login: {
+    name: 'Login Page',
+    link: '/login',
+  },
+  registration: {
+    name: 'Registration Page',
+    link: '/registration',
   },
   setting: {
     name: 'Setting Page',

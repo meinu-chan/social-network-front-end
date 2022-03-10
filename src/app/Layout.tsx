@@ -3,7 +3,8 @@ import { makeStyles } from '@mui/styles';
 import React, { Suspense, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Loader from '../components/Loader';
-import Authentication from '../containers/Authentication';
+import SignIn from '../containers/Authentication/SignIn';
+import SignUp from '../containers/Authentication/SignUp';
 import Setting from '../containers/Setting';
 import User from '../containers/User';
 import { scrollToTop } from '../helpers/common';
@@ -53,8 +54,9 @@ function Layout() {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Routes>
-            <Route path="/" element={<Navigate to={appLinks.auth.link} />} />
-            <Route path={appLinks.auth.link} element={<Authentication />} />
+            <Route path="/" element={<Navigate to={appLinks.login.link} />} />
+            <Route path={appLinks.login.link} element={<SignIn />} />
+            <Route path={appLinks.registration.link} element={<SignUp />} />
             <Route path={`${appLinks.index.link}:userId`} element={<User />} />
 
             {privateRoutes.map(({ path, element }) => (

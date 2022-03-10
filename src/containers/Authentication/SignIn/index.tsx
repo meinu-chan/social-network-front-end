@@ -1,6 +1,14 @@
-import { Typography, Box, FormControl, TextField, Button, Theme } from '@mui/material';
+import {
+  Typography,
+  Box,
+  FormControl,
+  TextField,
+  Button,
+  Theme,
+  Container,
+  CssBaseline,
+} from '@mui/material';
 import React, { FormEvent } from 'react';
-import { IAuthProps } from '..';
 import {
   setApiAuthorizationHeader,
   createApiClientRequestInterceptor,
@@ -29,7 +37,7 @@ const initialModel = {
   password: '',
 };
 
-function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps) {
+function SignIn() {
   const classes = useStyles();
 
   const { dispatch } = useAppContext();
@@ -64,44 +72,61 @@ function SignIn({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
   };
 
   return (
-    <>
-      <Typography component="h1" variant="h5">
-        {authType}
-      </Typography>
-      <Box component="form" onSubmit={handleSubmit}>
-        <FormControl fullWidth className={classes.formControl}>
-          <TextField
-            variant="outlined"
-            label="Enter your email"
-            value={model.email}
-            onChange={(event) => handleModelChange('email', event.target.value)}
-            error={isError && !isValidEmail(model.email)}
-            helperText={isError && !isValidEmail(model.email) && 'Invalid Email'}
-          />
-        </FormControl>
-        <FormControl fullWidth className={classes.formControl}>
-          <PasswordInput
-            variant="outlined"
-            label="Enter your password"
-            value={model.password}
-            onChange={(event) => handleModelChange('password', event.target.value)}
-            error={isError && !isValidPassword(model.password)}
-            helperText={
-              isError &&
-              !isValidPassword(model.password) &&
-              'Must contain lowercase and uppercase letters, a number and one of the characters !@#$%&*'
-            }
-          />
-        </FormControl>
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
 
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-          {authType}
-        </Button>
-        <Button sx={{ textAlign: 'left' }} onClick={updateUserState}>
-          {updateUserStateBtnTxt}
-        </Button>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography component="h1" variant="h5">
+          {'Authorize'}
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit}>
+          <FormControl fullWidth className={classes.formControl}>
+            <TextField
+              variant="outlined"
+              label="Email"
+              value={model.email}
+              onChange={(event) => handleModelChange('email', event.target.value)}
+              error={isError && !isValidEmail(model.email)}
+              helperText={isError && !isValidEmail(model.email) && 'Invalid Email'}
+            />
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <PasswordInput
+              variant="outlined"
+              label="Password"
+              value={model.password}
+              onChange={(event) => handleModelChange('password', event.target.value)}
+              error={isError && !isValidPassword(model.password)}
+              helperText={
+                isError &&
+                !isValidPassword(model.password) &&
+                'Must contain lowercase and uppercase letters, a number and one of the characters !@#$%&*'
+              }
+            />
+          </FormControl>
+
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
+            {'Login'}
+          </Button>
+          <Button
+            sx={{ textAlign: 'left' }}
+            onClick={() => {
+              navigate(appLinks.registration.link);
+            }}
+          >
+            {"I don't have account."}
+          </Button>
+        </Box>
       </Box>
-    </>
+    </Container>
   );
 }
 export default SignIn;

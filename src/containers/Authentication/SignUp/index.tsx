@@ -1,13 +1,20 @@
 import React, { FormEvent } from 'react';
-import { Box, Typography, FormControl, TextField, Button, Theme } from '@mui/material';
+import {
+  Box,
+  Typography,
+  FormControl,
+  TextField,
+  Button,
+  Theme,
+  Container,
+  CssBaseline,
+} from '@mui/material';
 import { signUp } from '../../../api/authApi';
 import PasswordInput from '../../../components/Form/PasswordInput';
 import isValidSignUpData from '../../../helpers/FormDataValidations/isValidSignUpData';
 import { isEmptyString, isValidEmail, isValidPassword } from '../../../helpers/validations';
 import useModel from '../../../hooks/useModel';
 import useApiRequest from '../../../hooks/userApiRequest';
-import { IAuthProps } from '..';
-import Loader from '../../../components/Loader';
 import {
   setApiAuthorizationHeader,
   createApiClientRequestInterceptor,
@@ -31,7 +38,7 @@ const initialModel = {
   fullName: '',
 };
 
-function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps) {
+function SignUp() {
   const classes = useStyles();
 
   const { requestFn: signUpApi, isLoading } = useApiRequest(signUp, {
@@ -72,58 +79,75 @@ function SignUp({ authType, updateUserState, updateUserStateBtnTxt }: IAuthProps
   };
 
   return (
-    <>
-      {isLoading && <Loader />}
-      <Typography component="h1" variant="h5">
-        {authType}
-      </Typography>
-      <Box component="form" onSubmit={handleSubmit}>
-        <FormControl fullWidth className={classes.formControl}>
-          <TextField
-            disabled={isLoading}
-            variant="outlined"
-            label="Enter your Full Name"
-            value={model.fullName}
-            onChange={(event) => handleModelChange('fullName', event.target.value)}
-            error={isError && isEmptyString(model.fullName)}
-            helperText={isError && isEmptyString(model.fullName) && 'Invalid Full Name'}
-          />
-        </FormControl>
-        <FormControl fullWidth className={classes.formControl}>
-          <TextField
-            disabled={isLoading}
-            variant="outlined"
-            label="Enter your email"
-            value={model.email}
-            onChange={(event) => handleModelChange('email', event.target.value)}
-            error={isError && !isValidEmail(model.email)}
-            helperText={isError && !isValidEmail(model.email) && 'Invalid Email'}
-          />
-        </FormControl>
-        <FormControl fullWidth className={classes.formControl}>
-          <PasswordInput
-            disabled={isLoading}
-            variant="outlined"
-            label="Enter your password"
-            value={model.password}
-            onChange={(event) => handleModelChange('password', event.target.value)}
-            error={isError && !isValidPassword(model.password)}
-            helperText={
-              isError &&
-              !isValidPassword(model.password) &&
-              'Must contain lowercase and uppercase letters, a number and one of the characters !@#$%&*'
-            }
-          />
-        </FormControl>
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
 
-        <Button disabled={isLoading} type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-          {authType}
-        </Button>
-        <Button disabled={isLoading} sx={{ textAlign: 'left' }} onClick={updateUserState}>
-          {updateUserStateBtnTxt}
-        </Button>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography component="h1" variant="h5">
+          {'Registration'}
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit}>
+          <FormControl fullWidth className={classes.formControl}>
+            <TextField
+              disabled={isLoading}
+              variant="outlined"
+              label="Full Name"
+              value={model.fullName}
+              onChange={(event) => handleModelChange('fullName', event.target.value)}
+              error={isError && isEmptyString(model.fullName)}
+              helperText={isError && isEmptyString(model.fullName) && 'Invalid Full Name'}
+            />
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <TextField
+              disabled={isLoading}
+              variant="outlined"
+              label="Email"
+              value={model.email}
+              onChange={(event) => handleModelChange('email', event.target.value)}
+              error={isError && !isValidEmail(model.email)}
+              helperText={isError && !isValidEmail(model.email) && 'Invalid Email'}
+            />
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <PasswordInput
+              disabled={isLoading}
+              variant="outlined"
+              label="Password"
+              value={model.password}
+              onChange={(event) => handleModelChange('password', event.target.value)}
+              error={isError && !isValidPassword(model.password)}
+              helperText={
+                isError &&
+                !isValidPassword(model.password) &&
+                'Must contain lowercase and uppercase letters, a number and one of the characters !@#$%&*'
+              }
+            />
+          </FormControl>
+
+          <Button disabled={isLoading} type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
+            {'Register'}
+          </Button>
+          <Button
+            disabled={isLoading}
+            sx={{ textAlign: 'left' }}
+            onClick={() => {
+              navigate(appLinks.login.link);
+            }}
+          >
+            {'I already have account.'}
+          </Button>
+        </Box>
       </Box>
-    </>
+    </Container>
   );
 }
 
