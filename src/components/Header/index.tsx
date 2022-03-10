@@ -73,7 +73,9 @@ function Header() {
   };
 
   useEffect(() => {
-    location.pathname === appLinks.auth.link ? setIsAuthPage(true) : setIsAuthPage(false);
+    [appLinks.login.link, appLinks.registration.link].includes(location.pathname)
+      ? setIsAuthPage(true)
+      : setIsAuthPage(false);
   }, [location.pathname]);
 
   const dropDownSettings = [
@@ -100,7 +102,7 @@ function Header() {
         await logoutApi({});
         dispatch(logOutUser());
         handleClose();
-        navigate(appLinks.auth.link);
+        navigate(appLinks.login.link);
       },
     },
   ];

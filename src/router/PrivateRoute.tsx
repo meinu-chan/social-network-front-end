@@ -7,6 +7,6 @@ interface IProps {
 }
 
 const PrivateRoute = ({ isAuthenticated }: IProps) =>
-  isAuthenticated ? <Outlet /> : <Navigate to={appLinks.auth.link} />;
+  isAuthenticated ? <Outlet /> : <Navigate to={appLinks.login.link} />;
 
 export default PrivateRoute;
