@@ -1,4 +1,4 @@
-import { Grid, Theme } from '@mui/material';
+import { Avatar, Grid, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Box } from '@mui/system';
 import React from 'react';
@@ -13,10 +13,7 @@ interface IProps extends Pick<UserData, '_id' | 'backgroundAvatar'> {
 
 const useStyles = makeStyles((theme: Theme) => ({
   box: {
-    paddingTop: '5%',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    backgroundPosition: 'bottom',
+    position: 'relative',
   },
   grid: {
     position: 'relative',
@@ -26,6 +23,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: 'absolute',
     bottom: '5%',
     right: '1%',
+  },
+  profileAvatar: {
+    width: '100% !important',
+    height: '100% !important',
+    '& img': {
+      objectFit: 'fill',
+    },
   },
 }));
 
@@ -44,7 +48,16 @@ function ProfileAvatar({ children, _id, backgroundAvatar }: IProps) {
   const classes = useStyles();
 
   return (
-    <Box sx={{ backgroundImage: `url(${bgAvatarSrc})` }} className={classes.box}>
+    <Box className={classes.box}>
+      <Avatar
+        src={bgAvatarSrc}
+        variant="square"
+        className={classes.profileAvatar}
+        sx={{ position: 'absolute' }}
+        imgProps={{
+          loading: 'eager',
+        }}
+      />
       <Grid container className={classes.grid}>
         {isMe && (
           <Grid item className={classes.updateBtn}>

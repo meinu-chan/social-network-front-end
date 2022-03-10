@@ -130,7 +130,13 @@ function Header() {
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="User profile">
                   <IconButton onClick={handleMenu} className={classes.iconButton}>
-                    <Avatar alt={state.user.fullName} src={avatarSrc} />
+                    <Avatar
+                      alt={state.user.fullName}
+                      src={avatarSrc}
+                      imgProps={{
+                        loading: 'eager',
+                      }}
+                    />
                   </IconButton>
                 </Tooltip>
                 <Menu

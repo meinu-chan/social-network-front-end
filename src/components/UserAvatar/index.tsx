@@ -39,7 +39,14 @@ function UserAvatar({ _id, photo }: Props) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         badgeContent={isMe && <UploadAvatar />}
       >
-        <Avatar src={avatarSrc} alt="user-photo" sx={{ width: 224, height: 224 }} />
+        <Avatar
+          src={avatarSrc}
+          alt="user-photo"
+          sx={{ width: 224, height: 224 }}
+          imgProps={{
+            loading: 'eager',
+          }}
+        />
       </Badge>
     </Box>
   );

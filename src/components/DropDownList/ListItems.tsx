@@ -13,7 +13,12 @@ function ListItems({ fullName, photo, nickname, handleSelect }: IProps) {
   return (
     <ListItemButton divider onClick={handleSelect}>
       <ListItemAvatar>
-        <Avatar src={imageSrc} />
+        <Avatar
+          src={imageSrc}
+          imgProps={{
+            loading: 'eager',
+          }}
+        />
       </ListItemAvatar>
       <ListItemText primary={`${fullName} ${nickname ? `(${nickname})` : ''}`} />
     </ListItemButton>
