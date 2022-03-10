@@ -27,9 +27,9 @@ function UserAvatar({ _id, photo }: Props) {
     state: { user },
   } = useAppContext();
   const classes = useStyles();
-  const avatarSrc = useImageSrc(photo || '');
-
   const isMe = user._id === _id;
+
+  const avatarSrc = useImageSrc((isMe ? user.photo : photo) || '');
 
   return (
     <Box className={classes.box}>
