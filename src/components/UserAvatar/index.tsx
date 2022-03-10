@@ -13,13 +13,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '5%',
   },
   avatar: {
     backgroundColor: '#ffffff',
     border: '1px solid',
     borderRadius: '50%',
-    transform: 'translate(0, 20%)',
+    transform: 'translateY(20%)',
   },
 }));
 

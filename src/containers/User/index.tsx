@@ -35,6 +35,11 @@ function User() {
             </Grid>
             <Grid item>
               <Typography align="center" variant="h4">
+                ⠀
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography align="center" variant="h4">
                 {data.fullName}
               </Typography>
             </Grid>
