@@ -17,10 +17,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
   },
+  grid: {
+    position: 'relative',
+    justifyContent: 'center',
+  },
   updateBtn: {
     position: 'absolute',
-    marginTop: '9% !important',
-    marginLeft: '1% !important',
+    bottom: '5%',
+    right: '1%',
   },
 }));
 
@@ -38,7 +42,7 @@ function ProfileAvatar({ children, _id, backgroundAvatar }: IProps) {
 
   return (
     <Box sx={{ backgroundImage: `url(${bgAvatarSrc})` }} className={classes.box}>
-      <Grid>
+      <Grid container className={classes.grid}>
         {isMe && (
           <Grid item className={classes.updateBtn}>
             <UploadProfileAvatar />
