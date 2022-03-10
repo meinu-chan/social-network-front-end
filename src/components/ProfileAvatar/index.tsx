@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingTop: '5%',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
+    backgroundPosition: 'bottom',
   },
   grid: {
     position: 'relative',
@@ -32,13 +33,15 @@ function ProfileAvatar({ children, _id, backgroundAvatar }: IProps) {
   const {
     state: { user },
   } = useAppContext();
+  const isMe = user._id === _id;
+
   const bgAvatarSrc = useImageSrc(
-    backgroundAvatar || process.env.REACT_APP_DEFAULT_BG_AVATAR_KEY || ''
+    (isMe ? user.backgroundAvatar : backgroundAvatar) ||
+      process.env.REACT_APP_DEFAULT_BG_AVATAR_KEY ||
+      ''
   );
 
   const classes = useStyles();
-
-  const isMe = user._id === _id;
 
   return (
     <Box sx={{ backgroundImage: `url(${bgAvatarSrc})` }} className={classes.box}>

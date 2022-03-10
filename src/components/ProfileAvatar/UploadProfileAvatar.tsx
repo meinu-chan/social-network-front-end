@@ -46,6 +46,8 @@ function UploadProfileAvatar() {
   const [fileForUpload, setFileForUpload] = useState('');
   const [isCropDialogOpen, setIsCropDialogOpen] = useState(false);
 
+  console.log(isCropDialogOpen);
+
   const imageMinValue = useMemo(
     () => ({
       height: 400,
@@ -60,15 +62,6 @@ function UploadProfileAvatar() {
       const file = e.target.files[0];
 
       image.onload = () => {
-        if (image.width < imageMinValue.width || image.height < imageMinValue.height) {
-          enqueueSnackbar(
-            `Minimal image size is ${imageMinValue.width}x${imageMinValue.height} pixels.`,
-            { variant: 'error' }
-          );
-
-          return;
-        }
-
         setFileForUpload(image.src);
         setIsCropDialogOpen(true);
       };
@@ -128,7 +121,7 @@ function UploadProfileAvatar() {
     () => ({
       unit: '%',
       width: 100,
-      height: 60,
+      height: 50,
       aspect: 1,
       x: 0,
       y: 0,
@@ -155,7 +148,10 @@ function UploadProfileAvatar() {
       <CropDialog
         isOpen={isCropDialogOpen}
         fileUrl={fileForUpload}
-        onClose={() => setIsCropDialogOpen(false)}
+        onClose={() => {
+          setIsCropDialogOpen(false);
+          setFileForUpload('');
+        }}
         onSubmit={handleUpload}
         cropSettings={cropSettings}
         minHeight={imageMinValue.height}
