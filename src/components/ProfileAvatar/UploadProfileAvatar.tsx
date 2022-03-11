@@ -46,16 +46,6 @@ function UploadProfileAvatar() {
   const [fileForUpload, setFileForUpload] = useState('');
   const [isCropDialogOpen, setIsCropDialogOpen] = useState(false);
 
-  console.log(isCropDialogOpen);
-
-  const imageMinValue = useMemo(
-    () => ({
-      height: 400,
-      width: 850,
-    }),
-    []
-  );
-
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const image = new Image();
@@ -154,10 +144,7 @@ function UploadProfileAvatar() {
         }}
         onSubmit={handleUpload}
         cropSettings={cropSettings}
-        minHeight={imageMinValue.height}
-        minWidth={imageMinValue.width}
-        maxHeight={imageMinValue.height}
-        maxWidth={imageMinValue.width}
+        locked
       />
     </>
   );
