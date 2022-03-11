@@ -12,7 +12,12 @@ import {
 import { signUp } from '../../../api/authApi';
 import PasswordInput from '../../../components/Form/PasswordInput';
 import isValidSignUpData from '../../../helpers/FormDataValidations/isValidSignUpData';
-import { isEmptyString, isValidEmail, isValidPassword } from '../../../helpers/validations';
+import {
+  isEmptyString,
+  isPhoneValid,
+  isValidEmail,
+  isValidPassword,
+} from '../../../helpers/validations';
 import useModel from '../../../hooks/useModel';
 import useApiRequest from '../../../hooks/userApiRequest';
 import {
@@ -36,6 +41,11 @@ const initialModel = {
   email: '',
   password: '',
   fullName: '',
+  confirmPassword: '',
+  phone: '',
+  university: '',
+  job: '',
+  birthday: '',
 };
 
 function SignUp() {
@@ -97,6 +107,7 @@ function SignUp() {
         <Box component="form" onSubmit={handleSubmit}>
           <FormControl fullWidth className={classes.formControl}>
             <TextField
+              required
               disabled={isLoading}
               variant="outlined"
               label="Full Name"
@@ -108,6 +119,7 @@ function SignUp() {
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
             <TextField
+              required
               disabled={isLoading}
               variant="outlined"
               label="Email"
@@ -119,6 +131,7 @@ function SignUp() {
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
             <PasswordInput
+              required
               disabled={isLoading}
               variant="outlined"
               label="Password"
@@ -132,19 +145,91 @@ function SignUp() {
               }
             />
           </FormControl>
-
-          <Button disabled={isLoading} type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-            {'Register'}
-          </Button>
-          <Button
-            disabled={isLoading}
-            sx={{ textAlign: 'left' }}
-            onClick={() => {
-              navigate(appLinks.login.link);
-            }}
-          >
-            {'I already have account.'}
-          </Button>
+          <FormControl fullWidth className={classes.formControl}>
+            <PasswordInput
+              required
+              disabled={isLoading}
+              variant="outlined"
+              label="Confirm password"
+              value={model.confirmPassword}
+              onChange={(event) => handleModelChange('confirmPassword', event.target.value)}
+              error={isError && !isValidPassword(model.password)}
+              helperText={isError && !isValidPassword(model.confirmPassword) && 'Password mismatch'}
+            />
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <TextField
+              disabled={isLoading}
+              variant="outlined"
+              label="Phone number"
+              placeholder="097-111-22-33"
+              value={model.phone}
+              onChange={(event) => handleModelChange('phone', event.target.value)}
+              error={isError && !isPhoneValid(model.phone)}
+              helperText={isError && !isPhoneValid(model.phone) && 'Invalid phone number'}
+            ></TextField>
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <TextField
+              disabled={isLoading}
+              variant="outlined"
+              type="text"
+              label="Place of study"
+              value={model.university}
+              onChange={(event) => handleModelChange('university', event.target.value)}
+            />
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <TextField
+              variant="outlined"
+              type="text"
+              label="Place of work"
+              value={model.job}
+              onChange={(event) => handleModelChange('job', event.target.value)}
+            />
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <TextField
+              variant="outlined"
+              type="date"
+              label="Birthday"
+              defaultValue="1.11.2000"
+              value={model.birthday}
+              onChange={(event) => handleModelChange('birthday', event.target.value)}
+            />
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <Button
+              disabled={isLoading}
+              type="submit"
+              variant="contained"
+              sx={{
+                width: '30%',
+                mt: 2,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {'Register'}
+            </Button>
+          </FormControl>
+          <FormControl fullWidth className={classes.formControl}>
+            <Button
+              disabled={isLoading}
+              sx={{
+                display: 'flex',
+                width: '60%',
+                textAlign: 'left',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onClick={() => {
+                navigate(appLinks.login.link);
+              }}
+            >
+              {'I already have account.'}
+            </Button>
+          </FormControl>
         </Box>
       </Box>
     </Container>
