@@ -1,5 +1,5 @@
 import { IconButton, Theme, CircularProgress } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
 import { makeStyles } from '@mui/styles';
 import { useSnackbar } from 'notistack';
@@ -11,7 +11,6 @@ import { useAppContext } from '../../store';
 import useApiRequest from '../../hooks/userApiRequest';
 import { updateMe } from '../../api/userApi';
 import { setUserData } from '../../store/actions';
-import { Crop } from 'react-image-crop';
 
 const useStyles = makeStyles((theme: Theme) => ({
   updatePhoto: {
@@ -52,15 +51,6 @@ function UploadAvatar() {
       const file = e.target.files[0];
 
       image.onload = () => {
-        if (image.width < 200 || image.height < 250) {
-          enqueueSnackbar(
-            `Minimal image size is ${imageMinValue.width}x${imageMinValue.height} pixels.`,
-            { variant: 'error' }
-          );
-
-          return;
-        }
-
         setFileForUpload(image.src);
         setIsCropDialogOpen(true);
       };
@@ -116,26 +106,6 @@ function UploadAvatar() {
 
   const acceptedFiles = 'image/jpeg, image/png';
 
-  const imageMinValue = useMemo(
-    () => ({
-      height: 250,
-      width: 200,
-    }),
-    []
-  );
-
-  const cropSettings: Crop = useMemo(
-    () => ({
-      unit: 'px',
-      width: imageMinValue.width,
-      height: imageMinValue.height,
-      aspect: 1,
-      x: 0,
-      y: 0,
-    }),
-    [imageMinValue]
-  );
-
   return (
     <>
       <IconButton className={classes.updatePhoto} component="label" disabled={isUploading}>
@@ -157,9 +127,6 @@ function UploadAvatar() {
         fileUrl={fileForUpload}
         onClose={() => setIsCropDialogOpen(false)}
         onSubmit={handleUpload}
-        minHeight={imageMinValue.height}
-        minWidth={imageMinValue.width}
-        cropSettings={cropSettings}
       />
     </>
   );
