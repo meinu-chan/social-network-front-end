@@ -21,10 +21,20 @@ const useStyles = makeStyles({
     padding: '20px 24px',
   },
   cropContainer: {
+    minWidth: '50vh',
+    minHeight: '50vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     '& img': {
       maxHeight: '60vh',
-      maxWidth: '100%',
+      width: '100%',
+      height: '100%',
     },
+  },
+  reactCrop: {
+    width: '100% !important',
+    height: '100% !important',
   },
   closeButton: {
     position: 'absolute',
@@ -40,10 +50,7 @@ interface Props {
   fileUrl: string;
   isOpen: boolean;
   cropSettings?: Crop;
-  minWidth: number;
-  minHeight: number;
-  maxWidth?: number;
-  maxHeight?: number;
+  locked?: boolean;
   onClose: () => void;
   onSubmit: (file: BlobWithName) => void;
 }
@@ -107,6 +114,7 @@ const CropDialog: React.FC<Props> = (props: Props) => {
       </DialogTitle>
       <DialogContent className={classes.cropContainer}>
         <ReactCrop
+          className={classes.reactCrop}
           keepSelection
           src={fileUrl}
           onImageLoaded={onLoad}

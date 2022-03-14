@@ -17,7 +17,6 @@ import {
 import { signIn } from '../../../api/authApi';
 import PasswordInput from '../../../components/Form/PasswordInput';
 import isValidSignInData from '../../../helpers/FormDataValidations/isValidSignInData';
-import { isValidEmail, isValidPassword } from '../../../helpers/validations';
 import useModel from '../../../hooks/useModel';
 import useApiRequest from '../../../hooks/userApiRequest';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +24,7 @@ import { appLinks } from '../../../router/routes';
 import { useAppContext } from '../../../store';
 import { logOutUser, authUser } from '../../../store/actions';
 import { makeStyles } from '@mui/styles';
+import useValidateModel from '../../../hooks/useValidateModel';
 
 const useStyles = makeStyles((theme: Theme) => ({
   formControl: {
@@ -45,6 +45,8 @@ function SignIn() {
   const navigate = useNavigate();
 
   const [model, handleModelChange] = useModel(initialModel);
+  const { valid, isValid, validateModel, setDefaultValidationState } =
+    useValidateModel(initialModel);
   const [isError, setIsError] = React.useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -52,9 +54,12 @@ function SignIn() {
 
     if (isError) {
       setIsError(false);
+      setDefaultValidationState();
     }
 
-    if (isValidSignInData(model)) {
+    isValidSignInData(model, validateModel);
+
+    if (isValid) {
       const res = await signInApi({ args: model });
 
       if (res.accessToken) {
@@ -94,8 +99,8 @@ function SignIn() {
               label="Email"
               value={model.email}
               onChange={(event) => handleModelChange('email', event.target.value)}
-              error={isError && !isValidEmail(model.email)}
-              helperText={isError && !isValidEmail(model.email) && 'Invalid Email'}
+              error={isError && !valid.email}
+              helperText={isError && !valid.email && 'Invalid Email'}
             />
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
@@ -104,12 +109,8 @@ function SignIn() {
               label="Password"
               value={model.password}
               onChange={(event) => handleModelChange('password', event.target.value)}
-              error={isError && !isValidPassword(model.password)}
-              helperText={
-                isError &&
-                !isValidPassword(model.password) &&
-                'Must contain lowercase and uppercase letters, a number and one of the characters !@#$%&*'
-              }
+              error={isError && !valid.password}
+              helperText={isError && !valid.password && 'Invalid Password'}
             />
           </FormControl>
 
