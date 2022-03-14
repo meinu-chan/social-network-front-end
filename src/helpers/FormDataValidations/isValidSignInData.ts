@@ -1,16 +1,14 @@
+import { ValidateModel } from './types';
 import { isValidEmail, isValidPassword } from '../validations';
 
 interface IModel {
-  [key: string]: any;
+  email: string;
+  password: string;
 }
 
-const isValidSignInData = (model: IModel) => {
-  const errors = [];
-
-  if (!isValidEmail(model.email)) errors.push('email');
-  if (!isValidPassword(model.password)) errors.push('password');
-
-  return errors.length === 0;
+const isValidSignInData: ValidateModel<IModel> = (model, validateFunc) => {
+  if (!isValidEmail(model.email)) validateFunc('email');
+  if (!isValidPassword(model.password)) validateFunc('password');
 };
 
 export default isValidSignInData;
