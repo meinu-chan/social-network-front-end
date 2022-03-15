@@ -9,6 +9,10 @@ import {
   Container,
   CssBaseline,
 } from '@mui/material';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+
 import { signUp } from '../../../api/authApi';
 import PasswordInput from '../../../components/Form/PasswordInput';
 import isValidSignUpData from '../../../helpers/FormDataValidations/isValidSignUpData';
@@ -30,6 +34,7 @@ import { appLinks } from '../../../router/routes';
 import { useAppContext } from '../../../store';
 import { logOutUser, authUser, setUserData } from '../../../store/actions';
 import { makeStyles } from '@mui/styles';
+import useValidateModel from '../../../hooks/useValidateModel';
 
 const useStyles = makeStyles((theme: Theme) => ({
   formControl: {
@@ -55,36 +60,40 @@ function SignUp() {
     showSuccessMessage: false,
   });
 
+  const { valid, isValid, validateModel, setDefaultValidationState } =
+    useValidateModel(initialModel);
   const { dispatch } = useAppContext();
   const navigate = useNavigate();
 
   const [model, handleModelChange] = useModel(initialModel);
-  const [isError, setIsError] = React.useState(false);
 
   let success = false;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (isError) setIsError(false);
+    if (!isValid) {
+      setDefaultValidationState();
+    }
 
-    if (isValidSignUpData(model)) {
-      const res = await signUpApi({
-        args: model,
-        successMessage: 'User has been created.',
-      });
+    isValidSignUpData(model, validateModel);
 
-      if (res.accessToken) {
-        setApiAuthorizationHeader(res.accessToken);
-        createApiClientRequestInterceptor(() => dispatch(logOutUser()));
-        createApiClientResponseInterceptor(() => dispatch(logOutUser()));
+    if (isValid) {
+      console.log('valid');
+      // const res = await signUpApi({
+      //   args: model,
+      //   successMessage: 'User has been created.',
+      // });
 
-        dispatch(authUser(res.user));
-        dispatch(setUserData(res.user));
-        success = true;
-      }
-      if (success) navigate(`${appLinks.index.link}${res.user._id}`);
-    } else {
-      setIsError(true);
+      // if (res.accessToken) {
+      //   setApiAuthorizationHeader(res.accessToken);
+      //   createApiClientRequestInterceptor(() => dispatch(logOutUser()));
+      //   createApiClientResponseInterceptor(() => dispatch(logOutUser()));
+
+      //   dispatch(authUser(res.user));
+      //   dispatch(setUserData(res.user));
+      //   success = true;
+      // }
+      // if (success) navigate(`${appLinks.index.link}${res.user._id}`);
     }
   };
 
@@ -107,54 +116,52 @@ function SignUp() {
         <Box component="form" onSubmit={handleSubmit}>
           <FormControl fullWidth className={classes.formControl}>
             <TextField
-              required
               disabled={isLoading}
               variant="outlined"
               label="Full Name"
               value={model.fullName}
               onChange={(event) => handleModelChange('fullName', event.target.value)}
-              error={isError && isEmptyString(model.fullName)}
-              helperText={isError && isEmptyString(model.fullName) && 'Invalid Full Name'}
+              error={!isValid && !valid.fullName}
+              helperText={!isValid && !valid.fullName && 'Invalid Full Name'}
             />
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
             <TextField
-              required
               disabled={isLoading}
               variant="outlined"
               label="Email"
               value={model.email}
               onChange={(event) => handleModelChange('email', event.target.value)}
-              error={isError && !isValidEmail(model.email)}
-              helperText={isError && !isValidEmail(model.email) && 'Invalid Email'}
+              error={!isValid && !valid.email}
+              helperText={!isValid && !valid.email && 'Invalid Email'}
             />
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
             <PasswordInput
-              required
               disabled={isLoading}
               variant="outlined"
               label="Password"
               value={model.password}
               onChange={(event) => handleModelChange('password', event.target.value)}
-              error={isError && !isValidPassword(model.password)}
+              error={!isValid && !valid.password}
               helperText={
-                isError &&
-                !isValidPassword(model.password) &&
+                !isValid &&
+                !valid.password &&
                 'Must contain lowercase and uppercase letters, a number and one of the characters !@#$%&*'
               }
             />
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
             <PasswordInput
-              required
               disabled={isLoading}
               variant="outlined"
               label="Confirm password"
               value={model.confirmPassword}
               onChange={(event) => handleModelChange('confirmPassword', event.target.value)}
-              error={isError && !isValidPassword(model.password)}
-              helperText={isError && !isValidPassword(model.confirmPassword) && 'Password mismatch'}
+              error={!isValid && !valid.password}
+              helperText={
+                !isValid && !isValidPassword(model.confirmPassword) && 'Password mismatch'
+              }
             />
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
@@ -165,8 +172,8 @@ function SignUp() {
               placeholder="097-111-22-33"
               value={model.phone}
               onChange={(event) => handleModelChange('phone', event.target.value)}
-              error={isError && !isPhoneValid(model.phone)}
-              helperText={isError && !isPhoneValid(model.phone) && 'Invalid phone number'}
+              error={!isValid && !valid.phone}
+              helperText={!isValid && !valid.phone && 'Invalid phone number'}
             ></TextField>
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
@@ -189,14 +196,15 @@ function SignUp() {
             />
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
-            <TextField
-              variant="outlined"
-              type="date"
-              label="Birthday"
-              defaultValue="1.11.2000"
-              value={model.birthday}
-              onChange={(event) => handleModelChange('birthday', event.target.value)}
-            />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDatePicker
+                label="Birthday"
+                inputFormat="MM/dd/yyyy"
+                value={model.birthday}
+                onChange={(event: any) => console.log(event)}
+                renderInput={(params: any) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
           </FormControl>
           <FormControl fullWidth className={classes.formControl}>
             <Button
