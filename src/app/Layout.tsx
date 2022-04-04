@@ -11,8 +11,8 @@ import { scrollToTop } from '../helpers/common';
 import NotFound from '../router/NotFound';
 import PrivateRoute from '../router/PrivateRoute';
 import { appLinks } from '../router/routes';
+import { emit } from '../socket';
 import { useAppContext } from '../store';
-
 interface IPrivateRoute {
   path: string;
   element: JSX.Element;
@@ -41,12 +41,16 @@ function Layout() {
   const classes = useStyles();
 
   const {
-    state: { isAuth },
+    state: { isAuth, user },
   } = useAppContext();
 
   useEffect(() => {
     scrollToTop();
   }, []);
+
+  useEffect(() => {
+    if (isAuth) emit({ event: 'connect', payload: user._id });
+  }, [isAuth, user._id, user]);
 
   return (
     <Suspense fallback={<Loader fullScreen />}>

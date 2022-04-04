@@ -1,14 +1,16 @@
 import { Container, Grid, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getUserById } from '../../api/userApi';
 import UserAvatar from '../../components/UserAvatar/';
 import Loader from '../../components/Loader';
 import useApiRequest from '../../hooks/userApiRequest';
 import ProfileAvatar from '../../components/ProfileAvatar';
+import { addMessageHandler, emit, removeMessageHandler } from '../../socket';
 
 function User() {
   const { userId } = useParams();
+  const [isOnline, setIsOnline] = useState(false);
 
   const {
     requestFn: getUserApi,
@@ -19,7 +21,27 @@ function User() {
   });
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    addMessageHandler('online', (user) => {
+      if (userId !== user) return;
+      if (timer) clearTimeout(timer);
+      setIsOnline(true);
+    });
+
+    addMessageHandler('disconnect', (user) => {
+      if (userId !== user) return;
+      timer = setTimeout(() => setIsOnline(false), 5000);
+    });
+
+    if (userId) emit({ event: 'isOnline', payload: userId });
+
     getUserApi({ args: userId });
+
+    return () => {
+      removeMessageHandler('online');
+      removeMessageHandler('disconnect');
+    };
   }, [getUserApi, userId]);
 
   return (
@@ -30,7 +52,7 @@ function User() {
           <Grid container wrap="nowrap" direction="column">
             <Grid item>
               <ProfileAvatar {...data}>
-                <UserAvatar {...data} />
+                <UserAvatar {...data} online={isOnline} />
               </ProfileAvatar>
             </Grid>
             <Grid item>
