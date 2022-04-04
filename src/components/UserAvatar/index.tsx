@@ -4,9 +4,12 @@ import React from 'react';
 import { useImageSrc } from '../../hooks/useImageSrc';
 import { useAppContext } from '../../store';
 import { UserData } from '../../types/User';
+import OnlineIdentifier from './OnlineIdentifier';
 import UploadAvatar from './UploadAvatar';
 
-type Props = Pick<UserData, '_id' | 'photo'>;
+interface IProps extends Pick<UserData, '_id' | 'photo'> {
+  online: boolean;
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
   box: {
@@ -22,9 +25,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-function UserAvatar({ _id, photo }: Props) {
+function UserAvatar({ _id, photo, online }: IProps) {
   const {
-    state: { user },
+    state: { isAuth, user },
   } = useAppContext();
   const classes = useStyles();
   const isMe = user._id === _id;
@@ -37,7 +40,7 @@ function UserAvatar({ _id, photo }: Props) {
         className={classes.avatar}
         overlap="circular"
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        badgeContent={isMe && <UploadAvatar />}
+        badgeContent={isAuth && (isMe ? <UploadAvatar /> : <OnlineIdentifier online={online} />)}
       >
         <Avatar
           src={avatarSrc}

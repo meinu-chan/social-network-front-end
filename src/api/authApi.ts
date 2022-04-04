@@ -8,6 +8,7 @@ import {
   AuthLoginResponse,
   AuthSignUpResponse,
 } from '../types/Auth';
+import { closeSocket } from '../socket';
 
 const endpointSignUp = ENDPOINTS.SIGN_UP;
 const endpointSignIn = ENDPOINTS.SIGN_IN;
@@ -24,7 +25,11 @@ const refreshToken = (): AuthRefreshTokenResponse =>
   }).then((res) => res.json());
 
 const logout = (): AuthLogOutResponse =>
-  apiClient.post(endpointLogOut, undefined, { withCredentials: true }).then((res) => res.data);
+  apiClient.post(endpointLogOut, undefined, { withCredentials: true }).then((res) => {
+    closeSocket();
+
+    return res.data;
+  });
 
 const signUp = (params: IAuthSignUpParams): AuthSignUpResponse =>
   apiClient.post(endpointSignUp, params, { withCredentials: true }).then((res) => res.data);
