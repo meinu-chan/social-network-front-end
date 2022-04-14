@@ -19,11 +19,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useApiRequest from '../../hooks/userApiRequest';
 import { logout } from '../../api/authApi';
 import { logOutUser } from '../../store/actions';
 import Loader from '../Loader';
 import SearchBar from './SearchBar';
+import useApiRequest from '../../hooks/useApiRequest';
 
 const useStyles = makeStyles((theme: Theme) => ({
   logoBox: {
@@ -110,7 +110,7 @@ function Header() {
   return (
     <>
       {isLoading && <Loader fullScreen />}
-      <AppBar position="static">
+      <AppBar position="sticky">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Box className={classes.logoBox}>
             <Typography

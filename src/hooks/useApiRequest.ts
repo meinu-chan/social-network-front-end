@@ -5,7 +5,15 @@ interface IConfig {
   showSuccessMessage: boolean;
 }
 
-export function useApiRequest<T = any>(fetcher: (...args: any[]) => Promise<T>, config?: IConfig) {
+interface IRequestFunction<R> {
+  successMessage?: string;
+  args?: R;
+}
+
+export function useApiRequest<T = any, R = any>(
+  fetcher: (...args: R[]) => Promise<T>,
+  config?: IConfig
+) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -13,12 +21,16 @@ export function useApiRequest<T = any>(fetcher: (...args: any[]) => Promise<T>, 
   const [data, setData] = useState<T | undefined>(undefined);
 
   const requestFn = useCallback(
-    async (params) => {
+    async (params: IRequestFunction<R>) => {
       try {
         setIsLoading(true);
         setError(undefined);
 
-        const response = await fetcher(params.args);
+        const fetcherParams = [];
+
+        if (params.args) fetcherParams.push(params.args);
+
+        const response = await fetcher.apply(null, fetcherParams);
 
         if (params.successMessage && config?.showSuccessMessage) {
           enqueueSnackbar(params.successMessage, { variant: 'success' });

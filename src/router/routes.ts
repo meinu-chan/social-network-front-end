@@ -24,6 +24,10 @@ const appLinks: IAppLinks = {
     name: 'Setting Page',
     link: '/setting',
   },
+  chat: {
+    name: 'Chat Page',
+    link: '/chat',
+  },
 };
 
 export { appLinks };

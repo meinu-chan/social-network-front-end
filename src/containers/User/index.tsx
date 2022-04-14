@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom';
 import { getUserById } from '../../api/userApi';
 import UserAvatar from '../../components/UserAvatar/';
 import Loader from '../../components/Loader';
-import useApiRequest from '../../hooks/userApiRequest';
 import ProfileAvatar from '../../components/ProfileAvatar';
 import { addMessageHandler, emit, removeMessageHandler } from '../../socket';
+import useApiRequest from '../../hooks/useApiRequest';
 
 function User() {
   const { userId } = useParams();
@@ -23,24 +23,25 @@ function User() {
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
-    addMessageHandler('online', (user) => {
+    addMessageHandler('USER::ONLINE', (user) => {
       if (userId !== user) return;
       if (timer) clearTimeout(timer);
       setIsOnline(true);
     });
 
-    addMessageHandler('disconnect', (user) => {
+    addMessageHandler('USER::DISCONNECT', (user) => {
       if (userId !== user) return;
       timer = setTimeout(() => setIsOnline(false), 5000);
     });
 
-    if (userId) emit({ event: 'isOnline', payload: userId });
-
-    getUserApi({ args: userId });
+    if (userId) {
+      emit({ event: 'USER::IS_ONLINE', payload: userId });
+      getUserApi({ args: userId });
+    }
 
     return () => {
-      removeMessageHandler('online');
-      removeMessageHandler('disconnect');
+      removeMessageHandler('USER::ONLINE');
+      removeMessageHandler('USER::DISCONNECT');
     };
   }, [getUserApi, userId]);
 

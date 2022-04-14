@@ -18,7 +18,7 @@ import { signIn } from '../../../api/authApi';
 import PasswordInput from '../../../components/Form/PasswordInput';
 import isValidSignInData from '../../../helpers/FormDataValidations/isValidSignInData';
 import useModel from '../../../hooks/useModel';
-import useApiRequest from '../../../hooks/userApiRequest';
+import useApiRequest from '../../../hooks/useApiRequest';
 import { useNavigate } from 'react-router-dom';
 import { appLinks } from '../../../router/routes';
 import { useAppContext } from '../../../store';

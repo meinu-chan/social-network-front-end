@@ -5,6 +5,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Loader from '../components/Loader';
 import SignIn from '../containers/Authentication/SignIn';
 import SignUp from '../containers/Authentication/SignUp';
+import Chat from '../containers/Chat';
 import Setting from '../containers/Setting';
 import User from '../containers/User';
 import { scrollToTop } from '../helpers/common';
@@ -32,10 +33,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
     paddingTop: '0',
+    paddingBottom: '0',
   },
 }));
 
-const privateRoutes: IPrivateRoute[] = [{ path: appLinks.setting.link, element: <Setting /> }];
+const privateRoutes: IPrivateRoute[] = [
+  { path: appLinks.setting.link, element: <Setting /> },
+  { path: appLinks.chat.link, element: <Chat /> },
+];
 
 function Layout() {
   const classes = useStyles();
@@ -49,7 +54,7 @@ function Layout() {
   }, []);
 
   useEffect(() => {
-    if (isAuth) emit({ event: 'connect', payload: user._id });
+    if (isAuth) emit({ event: 'USER::CONNECT', payload: user._id });
   }, [isAuth, user._id, user]);
 
   return (
