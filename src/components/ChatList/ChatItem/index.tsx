@@ -13,6 +13,7 @@ import { useAppContext } from '../../../store';
 import { IChatListItem } from '../../../types/Chat';
 import clsx from 'clsx';
 import colors from '../../../theme/colors';
+import { IUser } from '../../../types/User';
 
 const useStyles = makeStyles((theme: Theme) => ({
   listItem: {
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface IProps extends IChatListItem {
-  handleClick: (chatId: string) => void;
+  handleClick: (chatId: string, companion: IUser) => void;
   selectedItem: string;
 }
 
@@ -58,7 +59,7 @@ function ChatItem({
       secondaryAction={<Badge badgeContent={unread} color="primary" max={9} />}
       divider
       className={clsx(classes.listItem, { [classes.chosenItem]: selectedItem === chatId })}
-      onClick={() => handleClick(chatId)}
+      onClick={() => handleClick(chatId, member)}
     >
       <ListItemAvatar>
         <Avatar src={member.photo} alt={member.fullName} />
@@ -67,7 +68,7 @@ function ChatItem({
         primary={member.fullName}
         secondary={
           <React.Fragment>
-            <Typography component="span">{handleLongText(lastMessage.text)}</Typography>
+            <Typography component="span">{handleLongText(lastMessage?.text || '')}</Typography>
           </React.Fragment>
         }
       />

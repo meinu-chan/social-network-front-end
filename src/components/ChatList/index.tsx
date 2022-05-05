@@ -3,9 +3,10 @@ import { List } from '@mui/material';
 import { getChatList } from '../../api/chat';
 import useApiRequest from '../../hooks/useApiRequest';
 import ChatItem from './ChatItem';
+import { IUser } from '../../types/User';
 
 interface IProps {
-  handleClick: (chatId: string) => void;
+  handleClick: (chatId: string, companion: IUser) => void;
   selectedItem: string;
 }
 

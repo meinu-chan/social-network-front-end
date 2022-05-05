@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Messages from '../../components/Messages';
 import ChatList from '../../components/ChatList';
 import colors from '../../theme/colors';
+import { IUser } from '../../types/User';
 
 const useStyles = makeStyles((theme: Theme) => ({
   listOfChats: {
@@ -12,11 +13,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   chat: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     position: 'relative',
     width: '100%',
     borderLeft: `1px solid ${colors.lightGray}`,
-    overflow: 'auto',
   },
   container: {
     width: 'auto !important',
@@ -31,9 +31,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Chat = () => {
   const classes = useStyles();
   const [selectItem, setSelectItem] = useState('');
+  const [companion, setCompanion] = useState<IUser | null>(null);
 
-  const handleClick = (chatId: string) => {
+  const handleClick = (chatId: string, companion: IUser) => {
     setSelectItem(chatId);
+    setCompanion(companion);
   };
 
   return (
@@ -42,7 +44,7 @@ const Chat = () => {
         <ChatList handleClick={handleClick} selectedItem={selectItem} />
       </Grid>
       <Grid item className={classes.chat} sx={{ flexDirection: 'column' }}>
-        <Messages chat={selectItem} />
+        {companion && <Messages chat={selectItem} companion={companion} />}
       </Grid>
     </Grid>
   );

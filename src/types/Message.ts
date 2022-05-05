@@ -5,17 +5,14 @@ export interface IMessage {
   _id: string;
   text: string;
   chat: IChat['_id'];
-  author: Omit<IUser, 'password' | 'updatedAt' | 'createdAt'> & {
-    updatedAt: string;
-    createdAt: string;
-  };
+  author: IUser['_id'];
   readBy: IUser['_id'][];
 
   createdAt: Date;
   updatedAt: Date;
 }
 
-type MessageList = { [key: string]: IMessage[] };
+export type MessageList = { firstUnreadMessage: IMessage; messages: IMessage[] };
 
 export type MessageListResponse = Promise<MessageList>;
 

@@ -4,7 +4,8 @@ import ENDPOINTS from './endpoints';
 
 interface IGetMessageListPayload {
   chatId: string;
-  skip?: number;
+  date?: Date;
+  operator?: '+' | '-';
 }
 
 interface ISendMessagePayload {
@@ -14,12 +15,16 @@ interface ISendMessagePayload {
 
 const endpointGetMessageList = ENDPOINTS.MESSAGE_LIST;
 
-const getMessageList = ({ chatId, skip }: IGetMessageListPayload): MessageListResponse => {
+const getMessageList = ({
+  chatId,
+  date,
+  operator,
+}: IGetMessageListPayload): MessageListResponse => {
   let route = endpointGetMessageList(chatId);
 
-  if (skip) route += `?skip=${skip}`;
-
-  return apiClient.get<MessageListResponse>(route).then((res) => res.data);
+  return apiClient
+    .get<MessageListResponse>(route, { params: { date, operator } })
+    .then((res) => res.data);
 };
 
 const createMessageApi = ({ chatId, payload }: ISendMessagePayload): Promise<IMessage> =>
@@ -27,4 +32,9 @@ const createMessageApi = ({ chatId, payload }: ISendMessagePayload): Promise<IMe
     .post<IMessage>(endpointGetMessageList(chatId), payload, { withCredentials: true })
     .then((res) => res.data);
 
-export { getMessageList, createMessageApi };
+const readMessage = (messageId: string): Promise<IMessage> =>
+  apiClient
+    .patch<IMessage>(endpointGetMessageList(messageId), {}, { withCredentials: true })
+    .then((res) => res.data);
+
+export { getMessageList, createMessageApi, readMessage };

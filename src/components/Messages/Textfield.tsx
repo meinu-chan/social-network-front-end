@@ -14,8 +14,6 @@ interface IProps {
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    position: 'sticky',
-    bottom: '0',
     padding: '2%',
   },
   lateralIcons: {
@@ -33,6 +31,8 @@ function Textfield({ chatId, handleSending }: IProps) {
     const message = await createMessageApi({ chatId, payload: { text } });
 
     handleSending(message);
+
+    setText('');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -53,6 +53,7 @@ function Textfield({ chatId, handleSending }: IProps) {
           fullWidth
           multiline
           maxRows={4}
+          value={text}
           inputProps={{ maxLength: 2000 }}
           onChange={handleChange}
         />

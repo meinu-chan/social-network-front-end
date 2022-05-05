@@ -18,6 +18,7 @@ const ENDPOINTS = {
 
   MESSAGE_LIST: (chatId: string) => `${PREFIX}/messages/${chatId}`,
   SEND_MESSAGE: (chatId: string) => `${PREFIX}/messages/${chatId}`,
+  READ_MESSAGE: (messageId: string) => `${PREFIX}/messages/${messageId}`,
 };
 
 export default ENDPOINTS;

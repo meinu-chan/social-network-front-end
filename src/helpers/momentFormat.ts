@@ -15,7 +15,32 @@ const formatChatDate = (date: Date): string => {
   return dateToFormat.format(format);
 };
 
-const getFormattedDate = (date: Date, delimiter = '.') =>
-  moment(date).format(['MM', 'DD', 'YYYY'].join(delimiter));
+const getFormattedDate = (date: Date = new Date(), format = 'MM.DD.YYYY') =>
+  moment(date).format(format);
 
-export { getMomentFormattedDateNow, formatMessageDateTime, formatChatDate, getFormattedDate };
+const formatOnlineDate = (date: Date) => {
+  const momentDate = moment(date);
+  const difference = momentDate.diff(moment(), 'hours');
+
+  if (difference > 24) return momentDate.format('DD.MM at HH:mm');
+
+  if (difference > 5) return momentDate.format('today at HH:mm');
+
+  return momentDate.fromNow();
+};
+
+const getDifferenceBetweenDates = (date: Date, compareDate: Date) => {
+  const formattedDate = getFormattedDate(date);
+  const formattedCompareDate = getFormattedDate(compareDate);
+
+  return moment(formattedCompareDate).isBefore(moment(formattedDate));
+};
+
+export {
+  getMomentFormattedDateNow,
+  formatMessageDateTime,
+  formatChatDate,
+  getFormattedDate,
+  formatOnlineDate,
+  getDifferenceBetweenDates,
+};

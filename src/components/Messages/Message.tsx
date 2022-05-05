@@ -1,111 +1,126 @@
-import { ListItem, ListItemText, ListItemAvatar, Avatar, Theme } from '@mui/material';
+import { ListItem, Theme, Typography, Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { formatMessageDateTime } from '../../helpers/momentFormat';
 import { useAppContext } from '../../store';
 import { IMessage } from '../../types/Message';
 import clsx from 'clsx';
 import useOnScreen from '../../hooks/useOnScreen';
+import useApiRequest from '../../hooks/useApiRequest';
+import { readMessage } from '../../api/message';
 
-type Props = IMessage;
+interface IProps extends IMessage {
+  withTail: boolean;
+  isFirstUnread?: boolean;
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
-  avatar: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
   companionMessage: {
-    marginRight: '20%',
-    backgroundColor: '#a8ddfd',
-    border: '1px solid #97c6e3',
+    alignItems: 'flex-start',
+    backgroundColor: '#e5e5ea',
+    color: '#000',
     '&:after': {
-      borderTop: '15px solid #a8ddfd',
-      left: '-15px',
+      backgroundColor: '#fff',
+      borderBottomRightRadius: '0.5rem',
+      left: '20px',
+      transform: 'translate(-30px, -2px)',
+      width: '10px',
     },
     '&:before': {
-      borderTop: '17px solid #97C6E3',
-      left: '-17px',
+      borderBottomRightRadius: '0.8rem 0.7rem',
+      borderLeft: '1rem solid #e5e5ea',
+      left: '-0.35rem',
+      transform: 'translate(0, -0.1rem)',
     },
   },
   myMessage: {
-    marginLeft: '20% !important',
-    backgroundColor: '#f8e896',
-    border: '1px solid #dfd087',
-    '&:after': {
-      borderTop: '15px solid #f8e896',
-      right: '-15px',
-    },
+    alignSelf: 'flex-end',
+    backgroundColor: '#248bf5',
+    color: '#fff',
     '&:before': {
-      borderTop: '17px solid #dfd087',
-      right: '-17px',
+      borderBottomLeftRadius: '0.8rem 0.7rem',
+      borderRight: '1rem solid #248bf5',
+      right: '-0.35rem',
+      transform: 'translate(0, -0.1rem)',
+    },
+    '&:after': {
+      backgroundColor: '#fff',
+      borderBottomLeftRadius: '0.5rem',
+      right: '-40px',
+      transform: 'translate(-30px, -2px)',
+      width: '10px',
+    },
+  },
+  noTail: {
+    '&:before': {
+      display: 'none',
     },
   },
   message: {
+    display: 'flex',
+    borderRadius: '1.15rem',
+    lineHeight: '1.25',
+    maxWidth: '75%',
+    padding: '0.5rem .875rem',
     position: 'relative',
-    marginLeft: '20px',
-    marginBottom: '10px',
-    padding: '10px',
-    maxWidth: 'fit-content',
-    textAlign: 'left',
-    borderRadius: '10px',
+    wordWrap: 'break-word',
+    margin: '0.5rem 0',
+    width: 'fit-content',
     '&:after': {
+      bottom: '-0.1rem',
       content: "''",
+      height: '1rem',
       position: 'absolute',
-      width: '0',
-      height: '0',
-      borderLeft: '15px solid transparent',
-      borderRight: '15px solid transparent',
-      top: '0',
     },
     '&:before': {
+      bottom: '-0.1rem',
       content: "''",
+      height: '1rem',
       position: 'absolute',
-      width: '0',
-      height: '0',
-      borderLeft: '16px solid transparent',
-      borderRight: '16px solid transparent',
-      top: '-1px',
     },
   },
-  secondaryText: {
-    color: 'inherit',
+  typographyDate: {
+    width: '100%',
   },
 }));
 
-function Message({ text, createdAt, author, _id }: Props) {
+function Message({ withTail, isFirstUnread = false, ...messageData }: IProps) {
   const classes = useStyles();
   const {
     state: { user },
   } = useAppContext();
+  const { requestFn: readMessageApi } = useApiRequest(readMessage);
 
+  const [message, setMessage] = useState(messageData);
   const messageRef = useRef<HTMLLIElement>(null);
   const isVisible = useOnScreen(messageRef);
 
-  const isMe = user._id === (typeof author === 'string' ? author : author._id);
+  const isMe = user._id === message.author;
 
   useEffect(() => {
-    if (isVisible) console.log(`message >>> ${_id}  is visible!!!`);
-  }, [_id, isVisible]);
+    if (!isVisible) return;
+
+    if (message.author !== user._id || !message.readBy.includes(user._id)) {
+      // readMessageApi({ args: message._id });
+    }
+  }, [isVisible, message._id, message.author, message.readBy, readMessageApi, user._id]);
+
+  useEffect(() => {
+    if (isFirstUnread) messageRef.current?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [isFirstUnread]);
 
   return (
     <ListItem
       ref={messageRef}
-      sx={{
-        alignItems: 'flex-start',
-        justifyContent: isMe ? 'flex-end' : 'flex-start',
-      }}
+      sx={{ justifyContent: `flex-${isMe ? 'end' : 'start'}`, scrollMarginTop: '2.5rem' }}
     >
-      {!isMe && (
-        <ListItemAvatar className={classes.avatar}>
-          <Avatar alt={author.fullName} src={author.photo} />
-        </ListItemAvatar>
-      )}
-      <ListItemText
-        secondaryTypographyProps={{ textAlign: 'right' }}
-        className={clsx(classes.message, isMe ? classes.myMessage : classes.companionMessage)}
-        primary={text}
-        secondary={formatMessageDateTime(createdAt)}
-      />
+      <Box
+        className={clsx(classes.message, isMe ? classes.myMessage : classes.companionMessage, {
+          [classes.noTail]: !withTail,
+        })}
+      >
+        <Typography component="p">{message.text}</Typography>
+      </Box>
     </ListItem>
   );
 }
