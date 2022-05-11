@@ -1,14 +1,16 @@
-import { ListItem, Theme, Typography, Box } from '@mui/material';
+import { ListItem, Theme, Typography, Box, ListItemText } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { formatMessageDateTime } from '../../helpers/momentFormat';
 import { useAppContext } from '../../store';
 import { IMessage } from '../../types/Message';
 import clsx from 'clsx';
 import useOnScreen from '../../hooks/useOnScreen';
-import useApiRequest from '../../hooks/useApiRequest';
 import { readMessage } from '../../api/message';
-
+import DoneIcon from '@mui/icons-material/Done';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import { addMessageHandler, emit, removeMessageHandler } from '../../socket';
+import { FromServerReadMessageEvent } from '../../socket/types/serverEvents';
 interface IProps extends IMessage {
   withTail: boolean;
   isFirstUnread?: boolean;
@@ -82,6 +84,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   typographyDate: {
     width: '100%',
   },
+  messageInfo: {
+    display: 'flex',
+  },
+  asColumn: {
+    flexDirection: 'column',
+    marginTop: '0% !important',
+  },
 }));
 
 function Message({ withTail, isFirstUnread = false, ...messageData }: IProps) {
@@ -89,21 +98,41 @@ function Message({ withTail, isFirstUnread = false, ...messageData }: IProps) {
   const {
     state: { user },
   } = useAppContext();
-  const { requestFn: readMessageApi } = useApiRequest(readMessage);
 
   const [message, setMessage] = useState(messageData);
   const messageRef = useRef<HTMLLIElement>(null);
   const isVisible = useOnScreen(messageRef);
 
   const isMe = user._id === message.author;
+  const isLong = message.text.length > 15;
+
+  const readMessageApi = useCallback(async (messageId: string) => {
+    const message = await readMessage(messageId);
+
+    setMessage(message);
+
+    emit({ event: 'MESSAGE::READ', payload: { chat: message.chat, message } });
+  }, []);
+
+  useEffect(() => {
+    addMessageHandler<FromServerReadMessageEvent>('MESSAGE::READ', (payload) => {
+      if (payload._id === message._id && isMe) {
+        setMessage(payload);
+      }
+    });
+
+    return () => {
+      removeMessageHandler('MESSAGE::READ');
+    };
+  }, [isMe, message._id]);
 
   useEffect(() => {
     if (!isVisible) return;
 
-    if (message.author !== user._id || !message.readBy.includes(user._id)) {
-      // readMessageApi({ args: message._id });
+    if (!isMe && !message.readBy.includes(user._id)) {
+      readMessageApi(message._id);
     }
-  }, [isVisible, message._id, message.author, message.readBy, readMessageApi, user._id]);
+  }, [isVisible, message._id, message.readBy, readMessageApi, isMe, user._id]);
 
   useEffect(() => {
     if (isFirstUnread) messageRef.current?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -119,7 +148,27 @@ function Message({ withTail, isFirstUnread = false, ...messageData }: IProps) {
           [classes.noTail]: !withTail,
         })}
       >
-        <Typography component="p">{message.text}</Typography>
+        <ListItemText
+          className={clsx(classes.messageInfo, { [classes.asColumn]: isLong })}
+          primary={message.text}
+          secondary={
+            <React.Fragment>
+              <Typography mr="0.5rem">{formatMessageDateTime(message.createdAt)}</Typography>
+              {isMe && (!message.readBy.length ? <DoneIcon fontSize="small" /> : <DoneAllIcon />)}
+            </React.Fragment>
+          }
+          secondaryTypographyProps={{
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              marginTop: isLong ? '0' : '0.5rem',
+              marginLeft: '1rem',
+              color: isMe ? '#fff' : '#505050',
+            },
+            variant: 'h6',
+          }}
+        />
       </Box>
     </ListItem>
   );

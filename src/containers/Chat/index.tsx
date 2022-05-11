@@ -1,4 +1,4 @@
-import { Grid, Theme } from '@mui/material';
+import { Grid, Theme, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { useState } from 'react';
 import Messages from '../../components/Messages';
@@ -26,6 +26,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderLeft: `1px solid ${colors.lightGray}`,
     flexWrap: 'nowrap',
   },
+  chatNotSelected: {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }));
 
 const Chat = () => {
@@ -44,6 +50,11 @@ const Chat = () => {
         <ChatList handleClick={handleClick} selectedItem={selectItem} />
       </Grid>
       <Grid item className={classes.chat} sx={{ flexDirection: 'column' }}>
+        {!selectItem && (
+          <Typography className={classes.chatNotSelected} variant="h4">
+            {'Select chat to start chatting'}
+          </Typography>
+        )}
         {companion && <Messages chat={selectItem} companion={companion} />}
       </Grid>
     </Grid>

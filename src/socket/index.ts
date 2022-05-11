@@ -18,11 +18,14 @@ socket.onmessage = (e: MessageEvent<string>) => {
 
 type HandlerKeys = ServerToClientEvent['event'];
 
-const handleSocketResponse: { [key in HandlerKeys]?: SocketEventHandler } = {};
+const handleSocketResponse: { [key in HandlerKeys]?: SocketEventHandler<any> } = {};
 
-export const addMessageHandler = (name: HandlerKeys, handler: SocketEventHandler) => {
+export function addMessageHandler<T extends ServerToClientEvent>(
+  name: T['event'],
+  handler: SocketEventHandler<T['payload']>
+) {
   handleSocketResponse[name] = handler;
-};
+}
 
 export const removeMessageHandler = (name: HandlerKeys) => {
   delete handleSocketResponse[name];

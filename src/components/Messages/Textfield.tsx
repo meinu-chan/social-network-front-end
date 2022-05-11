@@ -5,6 +5,7 @@ import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { createMessageApi } from '../../api/message';
 import { IMessage } from '../../types/Message';
+import { emit } from '../../socket';
 
 interface IProps {
   chatId: string;
@@ -29,6 +30,8 @@ function Textfield({ chatId, handleSending }: IProps) {
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const message = await createMessageApi({ chatId, payload: { text } });
+
+    emit({ event: 'CHAT::SEND', payload: { chat: chatId, message } });
 
     handleSending(message);
 

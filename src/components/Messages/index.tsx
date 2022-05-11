@@ -20,6 +20,9 @@ import useApiRequest from '../../hooks/useApiRequest';
 import { IMessage } from '../../types/Message';
 import { IUser } from '../../types/User';
 import InfiniteScroll from '../InfiniteScroll';
+import { addMessageHandler, emit, removeMessageHandler } from '../../socket';
+import { FromServerReceiveMessageEvent } from '../../socket/types/serverEvents';
+import Loader from '../Loader';
 
 interface IProps {
   chat: string;
@@ -45,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
   },
   grid: {
-    flexDirection: 'row',
+    marginLeft: '5%',
   },
   table: {
     minWidth: 650,
@@ -77,6 +80,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column-reverse',
   },
+  noMessages: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+  },
 }));
 
 function Messages({ chat, companion }: IProps) {
@@ -93,7 +102,7 @@ function Messages({ chat, companion }: IProps) {
     if (loader.current) loader.current.scrollIntoView({ behavior: 'smooth' });
   }, [chat, getMessageListApi, messageLastDate]);
 
-  const sendMessage = (message: IMessage) => {
+  const updateMessages = (message: IMessage) => {
     const formattedDate = getFormattedDate(new Date(), 'YYYY-MM-DD');
 
     setMessages((prevMessages) => ({
@@ -106,7 +115,14 @@ function Messages({ chat, companion }: IProps) {
     setMessageLastDate(undefined);
     setMessages({});
 
-    if (chat) getMessageListApi({ args: { chatId: chat } });
+    if (chat) {
+      getMessageListApi({ args: { chatId: chat } });
+      emit({ event: 'CHAT::JOIN', payload: chat });
+    }
+
+    return () => {
+      emit({ event: 'CHAT::LEAVE', payload: chat });
+    };
   }, [chat, getMessageListApi]);
 
   useEffect(() => {
@@ -127,11 +143,19 @@ function Messages({ chat, companion }: IProps) {
     }
   }, [data]);
 
+  useEffect(() => {
+    addMessageHandler<FromServerReceiveMessageEvent>('CHAT::RECEIVE', updateMessages);
+
+    return () => {
+      removeMessageHandler('CHAT::RECEIVE');
+    };
+  }, []);
+
   return (
     <>
       <Box className={classes.chatHeader}>
         <Avatar src={companion.photo} alt={companion.fullName} />
-        <Grid container className={classes.grid}>
+        <Grid container direction="column" className={classes.grid}>
           <Grid item>
             <Typography>{companion.fullName}</Typography>
           </Grid>
@@ -140,7 +164,15 @@ function Messages({ chat, companion }: IProps) {
           </Grid>
         </Grid>
       </Box>
-      {Object.keys(messages).length && (
+      {!Object.keys(messages).length ? (
+        isLoading ? (
+          <Loader fullScreen />
+        ) : (
+          <Typography className={classes.noMessages} variant="h4">
+            {'There is no messages yet'}
+          </Typography>
+        )
+      ) : (
         <InfiniteScroll
           hasMore={!!data!.messages.length}
           loadMore={loadMoreMessages}
@@ -187,7 +219,7 @@ function Messages({ chat, companion }: IProps) {
           ))}
         </InfiniteScroll>
       )}
-      <Textfield chatId={chat} handleSending={sendMessage} />
+      {!!Object.keys(messages).length && <Textfield chatId={chat} handleSending={updateMessages} />}
     </>
   );
 }

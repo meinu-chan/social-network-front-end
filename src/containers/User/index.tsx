@@ -7,6 +7,10 @@ import Loader from '../../components/Loader';
 import ProfileAvatar from '../../components/ProfileAvatar';
 import { addMessageHandler, emit, removeMessageHandler } from '../../socket';
 import useApiRequest from '../../hooks/useApiRequest';
+import {
+  FromServerConnectionEvent,
+  FromServerDisconnectionEvent,
+} from '../../socket/types/serverEvents';
 
 function User() {
   const { userId } = useParams();
@@ -23,13 +27,13 @@ function User() {
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
-    addMessageHandler('USER::ONLINE', (user) => {
+    addMessageHandler<FromServerConnectionEvent>('USER::ONLINE', (user) => {
       if (userId !== user) return;
       if (timer) clearTimeout(timer);
       setIsOnline(true);
     });
 
-    addMessageHandler('USER::DISCONNECT', (user) => {
+    addMessageHandler<FromServerDisconnectionEvent>('USER::DISCONNECT', (user) => {
       if (userId !== user) return;
       timer = setTimeout(() => setIsOnline(false), 5000);
     });
