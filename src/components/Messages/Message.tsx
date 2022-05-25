@@ -11,9 +11,11 @@ import DoneIcon from '@mui/icons-material/Done';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { addMessageHandler, emit, removeMessageHandler } from '../../socket';
 import { FromServerReadMessageEvent } from '../../socket/types/serverEvents';
+import { IUser } from '../../types/User';
 interface IProps extends IMessage {
   withTail: boolean;
   isFirstUnread?: boolean;
+  companion: IUser;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -93,7 +95,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-function Message({ withTail, isFirstUnread = false, ...messageData }: IProps) {
+function Message({ withTail, companion, isFirstUnread = false, ...messageData }: IProps) {
   const classes = useStyles();
   const {
     state: { user },
@@ -106,25 +108,30 @@ function Message({ withTail, isFirstUnread = false, ...messageData }: IProps) {
   const isMe = user._id === message.author;
   const isLong = message.text.length > 15;
 
-  const readMessageApi = useCallback(async (messageId: string) => {
-    const message = await readMessage(messageId);
+  const readMessageApi = useCallback(
+    async (messageId: string) => {
+      const message = await readMessage(messageId);
 
-    setMessage(message);
+      setMessage(message);
 
-    emit({ event: 'MESSAGE::READ', payload: { chat: message.chat, message } });
-  }, []);
+      emit({ event: 'MESSAGE::READ', payload: { chat: message.chat, message } });
+      emit({ event: 'GLOBAL::NOTIFY::MESSAGE_RECEIVE', payload: companion._id });
+    },
+    [companion._id]
+  );
 
   useEffect(() => {
     addMessageHandler<FromServerReadMessageEvent>('MESSAGE::READ', (payload) => {
       if (payload._id === message._id && isMe) {
         setMessage(payload);
+        emit({ event: 'GLOBAL::NOTIFY::MESSAGE_RECEIVE', payload: companion._id });
       }
     });
 
     return () => {
       removeMessageHandler('MESSAGE::READ');
     };
-  }, [isMe, message._id]);
+  }, [companion._id, isMe, message._id]);
 
   useEffect(() => {
     if (!isVisible) return;
@@ -162,11 +169,17 @@ function Message({ withTail, isFirstUnread = false, ...messageData }: IProps) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-end',
-              marginTop: isLong ? '0' : '0.5rem',
+              marginTop: isLong ? '0' : '0.8rem',
               marginLeft: '1rem',
               color: isMe ? '#fff' : '#505050',
             },
+            variant: 'caption',
+          }}
+          primaryTypographyProps={{
             variant: 'h6',
+            style: {
+              fontWeight: '300',
+            },
           }}
         />
       </Box>

@@ -15,6 +15,7 @@ export const initialState: AppStateContext = {
     backgroundAvatar: '',
     createdAt: '',
     updatedAt: '',
+    lastOnline: '',
   },
 };
 

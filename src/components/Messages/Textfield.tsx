@@ -6,9 +6,11 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { createMessageApi } from '../../api/message';
 import { IMessage } from '../../types/Message';
 import { emit } from '../../socket';
+import { IUser } from '../../types/User';
 
 interface IProps {
   chatId: string;
+  companion: IUser;
   handleSending: (message: IMessage) => void;
 }
 
@@ -24,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-function Textfield({ chatId, handleSending }: IProps) {
+function Textfield({ chatId, handleSending, companion }: IProps) {
   const classes = useStyles();
   const [text, setText] = useState('');
 
@@ -32,6 +34,7 @@ function Textfield({ chatId, handleSending }: IProps) {
     const message = await createMessageApi({ chatId, payload: { text } });
 
     emit({ event: 'CHAT::SEND', payload: { chat: chatId, message } });
+    emit({ event: 'GLOBAL::NOTIFY::MESSAGE_RECEIVE', payload: companion._id });
 
     handleSending(message);
 

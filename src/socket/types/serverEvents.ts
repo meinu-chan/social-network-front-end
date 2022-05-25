@@ -29,3 +29,10 @@ export type FromServerReadMessageEvent = IServerToClientsEvent<
   'MESSAGE::READ',
   FromServerReadMessagePayload
 >;
+
+type FromServerGlobalReceiveMessagePayload = null;
+
+export type FromServerGlobalReceiveMessageEvent = IServerToClientsEvent<
+  'GLOBAL::CHAT::RECEIVE',
+  FromServerGlobalReceiveMessagePayload
+>;

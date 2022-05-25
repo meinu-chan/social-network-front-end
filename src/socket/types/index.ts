@@ -1,5 +1,6 @@
 import {
   ToServerConnectionEvent,
+  ToServerGlobalNotifyMessageReceiveEvent,
   ToServerIsOnlineEvent,
   ToServerJoinToRoomEvent,
   ToServerLeaveRoomEvent,
@@ -9,6 +10,7 @@ import {
 import {
   FromServerConnectionEvent,
   FromServerDisconnectionEvent,
+  FromServerGlobalReceiveMessageEvent,
   FromServerReadMessageEvent,
   FromServerReceiveMessageEvent,
 } from './serverEvents';
@@ -29,12 +31,14 @@ export type ClientToServerEvent =
   | ToServerJoinToRoomEvent
   | ToServerLeaveRoomEvent
   | ToServerSendMessageEvent
-  | ToServerReadMessageEvent;
+  | ToServerReadMessageEvent
+  | ToServerGlobalNotifyMessageReceiveEvent;
 
 export type ServerToClientEvent =
   | FromServerConnectionEvent
   | FromServerDisconnectionEvent
   | FromServerReceiveMessageEvent
-  | FromServerReadMessageEvent;
+  | FromServerReadMessageEvent
+  | FromServerGlobalReceiveMessageEvent;
 
 export type SocketEventHandler<P> = (payload: P) => void;

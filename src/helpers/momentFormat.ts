@@ -20,11 +20,13 @@ const getFormattedDate = (date: Date = new Date(), format = 'MM.DD.YYYY') =>
 
 const formatOnlineDate = (date: Date) => {
   const momentDate = moment(date);
-  const difference = momentDate.diff(moment(), 'hours');
+  const difference = moment().diff(momentDate, 'hours');
 
-  if (difference > 24) return momentDate.format('DD.MM at HH:mm');
+  if (moment().diff(momentDate, 'years') > 0) return momentDate.format('YYYY, DD MMMM [at] HH:mm');
 
-  if (difference > 5) return momentDate.format('today at HH:mm');
+  if (difference > 24) return momentDate.format('DD MMMM [at] HH:mm');
+
+  if (difference > 5) return momentDate.format('[today at] HH:mm');
 
   return momentDate.fromNow();
 };

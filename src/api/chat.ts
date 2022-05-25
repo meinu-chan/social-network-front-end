@@ -4,10 +4,8 @@ import ENDPOINTS from './endpoints';
 
 const endpointGetChatList = ENDPOINTS.CHAT_LIST;
 
-const getChatList = (skip: number): ChatListResponse => {
+const getChatList = (): ChatListResponse => {
   let route = endpointGetChatList;
-
-  if (skip) route += `?skip=${skip}`;
 
   return apiClient.get<ChatListResponse>(route).then((res) => res.data);
 };

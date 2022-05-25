@@ -12,21 +12,29 @@ import {
 import { makeStyles } from '@mui/styles';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getMessageList } from '../../api/message';
-import { formatChatDate, formatOnlineDate, getFormattedDate } from '../../helpers/momentFormat';
+import { formatChatDate, getFormattedDate } from '../../helpers/momentFormat';
 import Message from './Message';
 import Textfield from './Textfield';
 import clsx from 'clsx';
-import useApiRequest from '../../hooks/useApiRequest';
+import useApiRequest, { IRequestFunction } from '../../hooks/useApiRequest';
 import { IMessage } from '../../types/Message';
 import { IUser } from '../../types/User';
-import InfiniteScroll from '../InfiniteScroll';
 import { addMessageHandler, emit, removeMessageHandler } from '../../socket';
-import { FromServerReceiveMessageEvent } from '../../socket/types/serverEvents';
+import {
+  FromServerConnectionEvent,
+  FromServerDisconnectionEvent,
+  FromServerReceiveMessageEvent,
+} from '../../socket/types/serverEvents';
 import Loader from '../Loader';
+import { useLastOnlineDate } from '../../hooks/useLastOnlineDate';
+import { useNavigate } from 'react-router-dom';
+import { appLinks } from '../../router/routes';
+import { IChatListItem } from '../../types/Chat';
 
 interface IProps {
   chat: string;
   companion: IUser;
+  getChatList: (params: IRequestFunction<never>) => Promise<IChatListItem[]>;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -48,7 +56,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
   },
   grid: {
-    marginLeft: '5%',
+    marginLeft: '2%',
+    color: theme.palette.background.paper,
+    width: 'fit-content !important',
   },
   table: {
     minWidth: 650,
@@ -86,34 +96,63 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     height: '100%',
   },
+  offline: {
+    color: '#e9e9e9',
+  },
+  online: {
+    color: '#a7d4ff',
+  },
+  userInfo: {
+    display: 'flex',
+    cursor: 'pointer',
+  },
 }));
 
-function Messages({ chat, companion }: IProps) {
+function Messages({ chat, companion, getChatList }: IProps) {
   const classes = useStyles();
+  const navigate = useNavigate();
   const { requestFn: getMessageListApi, data, isLoading } = useApiRequest(getMessageList);
   const [messageLastDate, setMessageLastDate] = useState<Date>();
   const [messages, setMessages] = useState<{ [key: string]: IMessage[] }>({});
+  const [online, setOnline] = useState(false);
+  const [lastOnline, setLastOnline] = useState(companion.lastOnline);
+  const formattedLastOnline = useLastOnlineDate(lastOnline);
 
-  const lastMessage = useRef<HTMLDivElement>(null);
+  const observer = useRef<IntersectionObserver>();
+  const lastMessage = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !!data!.messages.length) {
+          getMessageListApi({ args: { chatId: chat, date: messageLastDate } });
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [chat, data, getMessageListApi, isLoading, messageLastDate]
+  );
+
   const loader = useRef<HTMLDivElement>(null);
 
-  const loadMoreMessages = useCallback(async () => {
-    if (messageLastDate) getMessageListApi({ args: { chatId: chat, date: messageLastDate } });
-    if (loader.current) loader.current.scrollIntoView({ behavior: 'smooth' });
-  }, [chat, getMessageListApi, messageLastDate]);
-
-  const updateMessages = (message: IMessage) => {
+  const updateMessages = useCallback((message: IMessage) => {
     const formattedDate = getFormattedDate(new Date(), 'YYYY-MM-DD');
 
     setMessages((prevMessages) => ({
       ...prevMessages,
       [formattedDate]: [message, ...(prevMessages[formattedDate] || [])],
     }));
-  };
+  }, []);
+
+  const redirectToUser = useCallback(() => {
+    navigate(`${appLinks.index.link}${companion._id}`);
+  }, [companion._id, navigate]);
 
   useEffect(() => {
     setMessageLastDate(undefined);
     setMessages({});
+    setOnline(false);
 
     if (chat) {
       getMessageListApi({ args: { chatId: chat } });
@@ -126,6 +165,7 @@ function Messages({ chat, companion }: IProps) {
   }, [chat, getMessageListApi]);
 
   useEffect(() => {
+    setMessageLastDate(new Date());
     if (data) {
       setMessageLastDate(data.messages[data.messages.length - 1]?.createdAt);
 
@@ -146,23 +186,49 @@ function Messages({ chat, companion }: IProps) {
   useEffect(() => {
     addMessageHandler<FromServerReceiveMessageEvent>('CHAT::RECEIVE', updateMessages);
 
+    let timer: NodeJS.Timeout;
+
+    addMessageHandler<FromServerConnectionEvent>('USER::ONLINE', (user) => {
+      if (companion._id !== user) return;
+      if (timer) clearTimeout(timer);
+      setOnline(true);
+    });
+
+    addMessageHandler<FromServerDisconnectionEvent>('USER::DISCONNECT', (user) => {
+      if (companion._id !== user) return;
+
+      timer = setTimeout(() => {
+        if (online) setLastOnline(new Date());
+        setOnline(false);
+      }, 5000);
+    });
+
+    emit({ event: 'USER::IS_ONLINE', payload: companion._id });
+
     return () => {
       removeMessageHandler('CHAT::RECEIVE');
+      removeMessageHandler('USER::ONLINE');
+      removeMessageHandler('USER::DISCONNECT');
     };
-  }, []);
+  }, [companion._id, online, updateMessages]);
 
   return (
     <>
       <Box className={classes.chatHeader}>
-        <Avatar src={companion.photo} alt={companion.fullName} />
-        <Grid container direction="column" className={classes.grid}>
-          <Grid item>
-            <Typography>{companion.fullName}</Typography>
+        <Box className={classes.userInfo} onClick={redirectToUser}>
+          <Avatar src={companion.photo} alt={companion.fullName} />
+          <Grid container direction="column" className={classes.grid}>
+            <Grid item>
+              <Typography noWrap>{companion.fullName}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography noWrap className={online ? classes.online : classes.offline}>
+                {online && 'online'}
+                {!online && formattedLastOnline}
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Typography>{formatOnlineDate(new Date())}</Typography>
-          </Grid>
-        </Grid>
+        </Box>
       </Box>
       {!Object.keys(messages).length ? (
         isLoading ? (
@@ -173,19 +239,7 @@ function Messages({ chat, companion }: IProps) {
           </Typography>
         )
       ) : (
-        <InfiniteScroll
-          hasMore={!!data!.messages.length}
-          loadMore={loadMoreMessages}
-          lastItem={lastMessage}
-          showLoader={isLoading}
-          loader={
-            <Box ref={loader} className={classes.circularLoader}>
-              <CircularProgress />
-            </Box>
-          }
-          className={clsx(classes.list)}
-          subheader={<ListSubheader />}
-        >
+        <List className={clsx(classes.list)} subheader={<ListSubheader />}>
           {Object.entries(messages).map(([date, messagesByDate], rootIndex, rootMessages) => (
             <Box key={date}>
               <ListSubheader className={classes.subheader}>
@@ -197,29 +251,36 @@ function Messages({ chat, companion }: IProps) {
                   const isFirstItem = !index;
 
                   const isLastRootItem = rootIndex + 1 === rootMessages.length;
+                  const isLastItem = index + 1 === messages.length;
 
                   const isSameUser = messages[index - 1]?.author === message.author;
                   const containUnread = !!data?.firstUnreadMessage;
                   const isFirstUnread =
                     containUnread && message._id === data?.firstUnreadMessage._id;
-
                   const messageConfig = {
                     withTail: (isFirstRootItem && isFirstItem) || !isSameUser,
                     isFirstUnread,
                   };
 
                   return (
-                    <Box ref={isLastRootItem ? lastMessage : null} key={message._id}>
-                      <Message {...message} {...messageConfig} />
+                    <Box ref={isLastRootItem && isLastItem ? lastMessage : null} key={message._id}>
+                      <Message {...message} {...messageConfig} companion={companion} />
                     </Box>
                   );
                 })}
               </List>
             </Box>
           ))}
-        </InfiniteScroll>
+          {isLoading && (
+            <Box ref={loader} className={classes.circularLoader}>
+              <CircularProgress disableShrink />
+            </Box>
+          )}
+        </List>
       )}
-      {!!Object.keys(messages).length && <Textfield chatId={chat} handleSending={updateMessages} />}
+      {!!Object.keys(messages).length && (
+        <Textfield chatId={chat} companion={companion} handleSending={updateMessages} />
+      )}
     </>
   );
 }

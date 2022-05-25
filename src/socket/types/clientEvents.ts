@@ -38,3 +38,10 @@ export type ToServerReadMessageEvent = IClientToServerEvent<
   'MESSAGE::READ',
   ToServerReadMessagePayload
 >;
+
+type ToServerGlobalNotifyPayload = UserData['_id'];
+
+export type ToServerGlobalNotifyMessageReceiveEvent = IClientToServerEvent<
+  'GLOBAL::NOTIFY::MESSAGE_RECEIVE',
+  ToServerGlobalNotifyPayload
+>;

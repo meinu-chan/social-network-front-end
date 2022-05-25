@@ -5,7 +5,7 @@ interface IConfig {
   showSuccessMessage: boolean;
 }
 
-interface IRequestFunction<R> {
+export interface IRequestFunction<R> {
   successMessage?: string;
   args?: R;
 }

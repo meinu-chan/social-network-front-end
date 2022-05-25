@@ -9,11 +9,11 @@ import {
   Badge,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useAppContext } from '../../../store';
-import { IChatListItem } from '../../../types/Chat';
+import { useAppContext } from '../../store';
+import { IChatListItem } from '../../types/Chat';
 import clsx from 'clsx';
-import colors from '../../../theme/colors';
-import { IUser } from '../../../types/User';
+import colors from '../../theme/colors';
+import { IUser } from '../../types/User';
 
 const useStyles = makeStyles((theme: Theme) => ({
   listItem: {
