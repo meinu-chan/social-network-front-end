@@ -12,17 +12,20 @@ export interface IUser {
   nickname?: string;
   photo: string;
   backgroundAvatar: string;
+  lastOnline: Date;
   updatedAt: Date;
   createdAt: Date;
 }
 
-export interface UserData extends Omit<IUser, 'password' | 'createdAt' | 'updatedAt'> {
+export interface UserData
+  extends Omit<IUser, 'password' | 'createdAt' | 'updatedAt' | 'lastOnline'> {
   createdAt: string;
   updatedAt: string;
+  lastOnline: string;
 }
 
 export type UpdateUserParams = Partial<
-  Pick<IUser, 'fullName' | 'nickname' | 'photo' | 'backgroundAvatar'>
+  Pick<IUser, 'fullName' | 'nickname' | 'photo' | 'backgroundAvatar' | 'lastOnline'>
 >;
 
 export type GetUserResponse = Promise<UserData>;

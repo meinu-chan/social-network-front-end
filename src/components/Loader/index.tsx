@@ -5,6 +5,7 @@ import clsx from 'clsx';
 
 interface IProps {
   fullScreen?: boolean;
+  display?: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -34,7 +35,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     left: '50%',
     transform: 'translate(-50%, -50%)',
   },
-
   '@keyframes lds-ripple': {
     '0%': {
       top: '50%',
@@ -51,13 +51,21 @@ const useStyles = makeStyles((theme: Theme) => ({
       opacity: 0,
     },
   },
+  hidden: {
+    display: 'none',
+  },
 }));
 
-function Loader({ fullScreen = false }: IProps) {
+function Loader({ fullScreen = false, display = true }: IProps) {
   const classes = useStyles();
 
   return (
-    <div className={clsx(classes.ldsRipple, { [classes.fullScreen]: fullScreen })}>
+    <div
+      className={clsx(classes.ldsRipple, {
+        [classes.fullScreen]: fullScreen,
+        [classes.hidden]: !display,
+      })}
+    >
       <div></div>
       <div></div>
     </div>

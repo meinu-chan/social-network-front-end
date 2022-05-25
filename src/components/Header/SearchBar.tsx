@@ -2,7 +2,7 @@ import { alpha, Box, InputBase, styled } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { getUserNonPaginatedUserList } from '../../api/userApi';
-import useApiRequest from '../../hooks/userApiRequest';
+import useApiRequest from '../../hooks/useApiRequest';
 import DropDownList from '../DropDownList';
 
 const Search = styled('div')(({ theme }) => ({

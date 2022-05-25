@@ -1,5 +1,19 @@
-import { ToServerConnectionEvent, ToServerIsOnlineEvent } from './clientEvents';
-import { FromServerConnectionEvent, FromServerDisconnectionEvent } from './serverEvents';
+import {
+  ToServerConnectionEvent,
+  ToServerGlobalNotifyMessageReceiveEvent,
+  ToServerIsOnlineEvent,
+  ToServerJoinToRoomEvent,
+  ToServerLeaveRoomEvent,
+  ToServerReadMessageEvent,
+  ToServerSendMessageEvent,
+} from './clientEvents';
+import {
+  FromServerConnectionEvent,
+  FromServerDisconnectionEvent,
+  FromServerGlobalReceiveMessageEvent,
+  FromServerReadMessageEvent,
+  FromServerReceiveMessageEvent,
+} from './serverEvents';
 
 export interface IClientToServerEvent<E = string, T = any> {
   event: E;
@@ -11,7 +25,20 @@ export interface IServerToClientsEvent<E = string, T = any> {
   payload: T;
 }
 
-export type ClientToServerEvent = ToServerConnectionEvent | ToServerIsOnlineEvent;
-export type ServerToClientEvent = FromServerConnectionEvent | FromServerDisconnectionEvent;
+export type ClientToServerEvent =
+  | ToServerConnectionEvent
+  | ToServerIsOnlineEvent
+  | ToServerJoinToRoomEvent
+  | ToServerLeaveRoomEvent
+  | ToServerSendMessageEvent
+  | ToServerReadMessageEvent
+  | ToServerGlobalNotifyMessageReceiveEvent;
 
-export type SocketEventHandler = (payload: ServerToClientEvent['payload']) => void;
+export type ServerToClientEvent =
+  | FromServerConnectionEvent
+  | FromServerDisconnectionEvent
+  | FromServerReceiveMessageEvent
+  | FromServerReadMessageEvent
+  | FromServerGlobalReceiveMessageEvent;
+
+export type SocketEventHandler<P> = (payload: P) => void;

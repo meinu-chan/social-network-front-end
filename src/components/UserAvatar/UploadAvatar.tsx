@@ -8,7 +8,7 @@ import axios from 'axios';
 import { BlobWithName } from '../../types/common';
 import { generatePutUrl } from '../../api/awsApi';
 import { useAppContext } from '../../store';
-import useApiRequest from '../../hooks/userApiRequest';
+import useApiRequest from '../../hooks/useApiRequest';
 import { updateMe } from '../../api/userApi';
 import { setUserData } from '../../store/actions';
 

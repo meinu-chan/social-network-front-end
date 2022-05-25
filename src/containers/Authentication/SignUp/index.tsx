@@ -14,7 +14,7 @@ import PasswordInput from '../../../components/Form/PasswordInput';
 import isValidSignUpData from '../../../helpers/FormDataValidations/isValidSignUpData';
 import { isEmptyString, isValidEmail, isValidPassword } from '../../../helpers/validations';
 import useModel from '../../../hooks/useModel';
-import useApiRequest from '../../../hooks/userApiRequest';
+import useApiRequest from '../../../hooks/useApiRequest';
 import {
   setApiAuthorizationHeader,
   createApiClientRequestInterceptor,
