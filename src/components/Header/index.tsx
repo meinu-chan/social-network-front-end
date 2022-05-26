@@ -10,7 +10,10 @@ import {
   Box,
   Tooltip,
   Avatar,
+  Badge,
+  colors,
 } from '@mui/material';
+import ChatIcon from '@mui/icons-material/Chat';
 import { useAppContext } from '../../store';
 import { makeStyles } from '@mui/styles';
 import { useImageSrc } from '../../hooks/useImageSrc';
@@ -110,8 +113,8 @@ function Header() {
   return (
     <>
       {isLoading && <Loader fullScreen />}
-      {!isAuthPage && (
-        <AppBar position="sticky">
+      <AppBar position="sticky">
+        {!isAuthPage && (
           <Toolbar sx={{ justifyContent: 'space-between' }}>
             <Box className={classes.logoBox}>
               <Typography
@@ -128,49 +131,65 @@ function Header() {
                 <Box className={classes.searchBox}>
                   <SearchBar />
                 </Box>
-                <Box sx={{ flexGrow: 0 }}>
-                  <Tooltip title="User profile">
-                    <IconButton onClick={handleMenu} className={classes.iconButton}>
-                      <Avatar
-                        alt={state.user.fullName}
-                        src={avatarSrc}
-                        imgProps={{
-                          loading: 'eager',
-                        }}
-                      />
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  {location.pathname !== appLinks.chat.link && (
+                    <IconButton
+                      sx={{ marginRight: '1rem' }}
+                      onClick={() => navigate(appLinks.chat.link)}
+                    >
+                      <Badge badgeContent={4} color="error" max={99}>
+                        <ChatIcon sx={{ color: colors.grey[50] }} />
+                      </Badge>
                     </IconButton>
-                  </Tooltip>
-                  <Menu
-                    sx={{ mt: '45px' }}
-                    id="menu-appbar"
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                  >
-                    {dropDownSettings.map((setting, i) => (
-                      <MenuItem key={setting.field} onClick={setting.onClick} disabled={isLoading}>
-                        {setting.icon}
-                        <Typography textAlign="center" className={classes.settingItem}>
-                          {setting.field}
-                        </Typography>
-                      </MenuItem>
-                    ))}
-                  </Menu>
+                  )}
+                  <Box sx={{ flexGrow: 0 }}>
+                    <Tooltip title="User profile">
+                      <IconButton onClick={handleMenu} className={classes.iconButton}>
+                        <Avatar
+                          alt={state.user.fullName}
+                          src={avatarSrc}
+                          imgProps={{
+                            loading: 'eager',
+                          }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      sx={{ mt: '45px' }}
+                      id="menu-appbar"
+                      anchorEl={anchorEl}
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                      open={Boolean(anchorEl)}
+                      onClose={handleClose}
+                    >
+                      {dropDownSettings.map((setting, i) => (
+                        <MenuItem
+                          key={setting.field}
+                          onClick={setting.onClick}
+                          disabled={isLoading}
+                        >
+                          {setting.icon}
+                          <Typography textAlign="center" className={classes.settingItem}>
+                            {setting.field}
+                          </Typography>
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </Box>
                 </Box>
               </>
             )}
           </Toolbar>
-        </AppBar>
-      )}
+        )}
+      </AppBar>
     </>
   );
 }

@@ -7,12 +7,10 @@ import { IUser } from '../../types/User';
 import { getChatList } from '../../api/chat';
 import useApiRequest from '../../hooks/useApiRequest';
 import ChatItem from '../../components/ChatItem';
-import { addMessageHandler, emit, removeMessageHandler } from '../../socket';
+import { addMessageHandler, removeMessageHandler } from '../../socket';
 import { IChatListItem } from '../../types/Chat';
-import {
-  FromServerGlobalReceiveMessageEvent,
-  FromServerReceiveMessageEvent,
-} from '../../socket/types/serverEvents';
+import clsx from 'clsx';
+import { FromServerGlobalReceiveMessageEvent } from '../../socket/types/serverEvents';
 
 const useStyles = makeStyles((theme: Theme) => ({
   listOfChats: {
@@ -36,6 +34,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   chatNotSelected: {
     height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noChats: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -78,9 +81,13 @@ const Chat = () => {
 
   return (
     <Grid container className={classes.container} sx={{ flexWrap: 'nowrap' }}>
-      <Grid item className={classes.listOfChats}>
+      <Grid
+        item
+        className={clsx(classes.listOfChats, { [classes.noChats]: !Object.keys(chats).length })}
+      >
         <List disablePadding>
-          {Object.keys(chats) &&
+          {!Object.keys(chats).length && <Typography variant="h4">No chats yet</Typography>}
+          {!!Object.keys(chats).length &&
             Object.entries(chats).map(([key, chat]) => (
               <ChatItem handleClick={handleClick} selectedItem={selectItem} key={key} {...chat} />
             ))}

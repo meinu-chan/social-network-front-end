@@ -17,6 +17,7 @@ import { logOutUser, authUser } from '../../../store/actions';
 import { makeStyles } from '@mui/styles';
 import useValidateModel from '../../../hooks/useValidateModel';
 import clsx from 'clsx';
+import colors from '../../../theme/colors';
 //@ts-ignore
 import bubble from '../../../static/images/bubble.png';
 //@ts-ignore
@@ -123,6 +124,8 @@ function SignIn() {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              backgroundColor: colors.paperLight,
+              borderRadius: '0 50px 50px 0',
             }}
           >
             <Box className={classes.formBox}>

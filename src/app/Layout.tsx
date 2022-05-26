@@ -2,7 +2,6 @@ import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { Suspense, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Header from '../components/Header';
 import Loader from '../components/Loader';
 import SignIn from '../containers/Authentication/SignIn';
 import SignUp from '../containers/Authentication/SignUp';
@@ -34,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexGrow: 1,
     paddingTop: '0',
     paddingBottom: '0',
+    backgroundColor: '#F6F8FF',
   },
 }));
 
@@ -59,7 +59,6 @@ function Layout() {
 
   return (
     <Suspense fallback={<Loader fullScreen />}>
-      <Header />
       <div className={classes.root}>
         <main className={classes.content}>
           <div className={classes.toolbar} />

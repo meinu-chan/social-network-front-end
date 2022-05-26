@@ -21,6 +21,7 @@ import clsx from 'clsx';
 import bubble from '../../../static/images/bubble.png';
 //@ts-ignore
 import logo from '../../../static/images/logo.png';
+import colors from '../../../theme/colors';
 
 const useStyles = makeStyles((theme: Theme) => ({
   formControl: {
@@ -125,6 +126,8 @@ function SignUp() {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              backgroundColor: colors.paperLight,
+              borderRadius: '0 50px 50px 0',
             }}
           >
             <Box className={classes.formBox}>

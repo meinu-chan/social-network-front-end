@@ -4,6 +4,7 @@ import DataWrapper from './app/DataWrapper';
 import Layout from './app/Layout';
 import SwrConfigWrapper from './app/SWRConfigWrapper';
 import Theme from './app/Theme';
+import Header from './components/Header';
 import { AppStoreProvider } from './store';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <AppStoreProvider>
         <Theme>
           <BrowserRouter>
+            <Header />
             <DataWrapper>
               <Layout />
             </DataWrapper>
