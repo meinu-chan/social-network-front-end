@@ -1,13 +1,4 @@
-import {
-  Typography,
-  Box,
-  FormControl,
-  TextField,
-  Button,
-  Theme,
-  Container,
-  CssBaseline,
-} from '@mui/material';
+import { Typography, Box, FormControl, TextField, Button, Theme } from '@mui/material';
 import React, { FormEvent } from 'react';
 import {
   setApiAuthorizationHeader,
@@ -25,10 +16,52 @@ import { useAppContext } from '../../../store';
 import { logOutUser, authUser } from '../../../store/actions';
 import { makeStyles } from '@mui/styles';
 import useValidateModel from '../../../hooks/useValidateModel';
+import clsx from 'clsx';
+//@ts-ignore
+import bubble from '../../../static/images/bubble.png';
+//@ts-ignore
+import logo from '../../../static/images/logo.png';
 
 const useStyles = makeStyles((theme: Theme) => ({
   formControl: {
-    margin: '5px 0 !important',
+    margin: '2% 0 !important',
+  },
+  main: {
+    height: '100vh',
+  },
+  blueBox: {
+    height: '100%',
+    width: '50%',
+    backgroundColor: theme.palette.primary.main,
+  },
+  fullScreen: {
+    height: '100vh',
+    width: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  form: {
+    height: '70vh',
+    width: '70%',
+    display: 'flex',
+    '& .formBox': {
+      height: '100%',
+      width: '50%',
+    },
+  },
+  formBox: {
+    width: '60%',
+  },
+  withBubble: {
+    border: '1px solid #F6F8FF',
+    backgroundColor: '#F6F8FF',
+    borderRadius: '50px 0px 0px 50px',
+    background: `url(${bubble}) no-repeat center center`,
+    backgroundSize: '60vh',
   },
 }));
 
@@ -77,57 +110,72 @@ function SignIn() {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          {'Authorize'}
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
-          <FormControl fullWidth className={classes.formControl}>
-            <TextField
-              variant="outlined"
-              label="Email"
-              value={model.email}
-              onChange={(event) => handleModelChange('email', event.target.value)}
-              error={isError && !valid.email}
-              helperText={isError && !valid.email && 'Invalid Email'}
-            />
-          </FormControl>
-          <FormControl fullWidth className={classes.formControl}>
-            <PasswordInput
-              variant="outlined"
-              label="Password"
-              value={model.password}
-              onChange={(event) => handleModelChange('password', event.target.value)}
-              error={isError && !valid.password}
-              helperText={isError && !valid.password && 'Invalid Password'}
-            />
-          </FormControl>
-
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-            {'Login'}
-          </Button>
-          <Button
-            sx={{ textAlign: 'left' }}
-            onClick={() => {
-              navigate(appLinks.registration.link);
+    <Box className={classes.main}>
+      <Box className={classes.blueBox} />
+      <Box className={classes.fullScreen}>
+        <Box className={classes.form}>
+          <Box className={clsx('formBox', classes.withBubble)}>
+            <img src={logo} alt="logo" style={{ width: '20%' }} />
+          </Box>
+          <Box
+            className={'formBox'}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
-            {"I don't have account."}
-          </Button>
+            <Box className={classes.formBox}>
+              <Typography
+                textAlign="center"
+                variant="h6"
+                sx={{
+                  fontFamily: 'Montserrat',
+                  textTransform: 'uppercase',
+                }}
+                noWrap
+              >
+                Login in your account
+              </Typography>
+              <Box component="form" onSubmit={handleSubmit}>
+                <FormControl fullWidth className={classes.formControl}>
+                  <TextField
+                    variant="outlined"
+                    label="Email"
+                    value={model.email}
+                    onChange={(event) => handleModelChange('email', event.target.value)}
+                    error={isError && !valid.email}
+                    helperText={isError && !valid.email && 'Invalid Email'}
+                  />
+                </FormControl>
+                <FormControl fullWidth className={classes.formControl}>
+                  <PasswordInput
+                    variant="outlined"
+                    label="Password"
+                    value={model.password}
+                    onChange={(event) => handleModelChange('password', event.target.value)}
+                    error={isError && !valid.password}
+                    helperText={isError && !valid.password && 'Invalid Password'}
+                  />
+                </FormControl>
+
+                <Button type="submit" fullWidth variant="outlined" sx={{ mt: 3 }}>
+                  {'Login'}
+                </Button>
+                <Button
+                  sx={{ textAlign: 'right' }}
+                  onClick={() => {
+                    navigate(appLinks.registration.link);
+                  }}
+                >
+                  {"I don't have account."}
+                </Button>
+              </Box>
+            </Box>
+          </Box>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 }
 export default SignIn;

@@ -1,4 +1,3 @@
-import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/styles';
 import React from 'react';
 import CustomSnackbar from '../components/CustomSnackbar';
@@ -13,10 +12,7 @@ const Theme: React.FC<Props> = (props: Props) => {
 
   return (
     <ThemeProvider theme={appTheme}>
-      <CustomSnackbar>
-        <CssBaseline />
-        {children}
-      </CustomSnackbar>
+      <CustomSnackbar>{children}</CustomSnackbar>
     </ThemeProvider>
   );
 };
