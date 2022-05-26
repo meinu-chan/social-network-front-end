@@ -110,65 +110,67 @@ function Header() {
   return (
     <>
       {isLoading && <Loader fullScreen />}
-      <AppBar position="sticky">
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Box className={classes.logoBox}>
-            <Typography
-              variant="h6"
-              component="a"
-              href={`${appLinks.index.link}${state.user._id}`}
-              className={classes.logo}
-            >
-              {'Social Network'}
-            </Typography>
-          </Box>
-          {!isAuthPage && state.isAuth && (
-            <>
-              <Box className={classes.searchBox}>
-                <SearchBar />
-              </Box>
-              <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="User profile">
-                  <IconButton onClick={handleMenu} className={classes.iconButton}>
-                    <Avatar
-                      alt={state.user.fullName}
-                      src={avatarSrc}
-                      imgProps={{
-                        loading: 'eager',
-                      }}
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: '45px' }}
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
-                  {dropDownSettings.map((setting, i) => (
-                    <MenuItem key={setting.field} onClick={setting.onClick} disabled={isLoading}>
-                      {setting.icon}
-                      <Typography textAlign="center" className={classes.settingItem}>
-                        {setting.field}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-            </>
-          )}
-        </Toolbar>
-      </AppBar>
+      {!isAuthPage && (
+        <AppBar position="sticky">
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <Box className={classes.logoBox}>
+              <Typography
+                variant="h6"
+                component="a"
+                href={`${appLinks.index.link}${state.user._id}`}
+                className={classes.logo}
+              >
+                {'Social Network'}
+              </Typography>
+            </Box>
+            {state.isAuth && (
+              <>
+                <Box className={classes.searchBox}>
+                  <SearchBar />
+                </Box>
+                <Box sx={{ flexGrow: 0 }}>
+                  <Tooltip title="User profile">
+                    <IconButton onClick={handleMenu} className={classes.iconButton}>
+                      <Avatar
+                        alt={state.user.fullName}
+                        src={avatarSrc}
+                        imgProps={{
+                          loading: 'eager',
+                        }}
+                      />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                  >
+                    {dropDownSettings.map((setting, i) => (
+                      <MenuItem key={setting.field} onClick={setting.onClick} disabled={isLoading}>
+                        {setting.icon}
+                        <Typography textAlign="center" className={classes.settingItem}>
+                          {setting.field}
+                        </Typography>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Box>
+              </>
+            )}
+          </Toolbar>
+        </AppBar>
+      )}
     </>
   );
 }

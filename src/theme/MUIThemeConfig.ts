@@ -2,6 +2,9 @@ import { createTheme } from '@mui/material/styles';
 import colors from './colors';
 
 const appTheme = createTheme({
+  typography: {
+    fontFamily: 'Montserrat',
+  },
   palette: {
     primary: {
       main: colors.primary,
