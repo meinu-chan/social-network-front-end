@@ -16,12 +16,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingLeft: '2rem',
+    height: '30vh',
   },
   avatar: {
     backgroundColor: '#ffffff',
     border: '1px solid',
     borderRadius: '50%',
-    transform: 'translateY(20%)',
+    transform: 'translateY(35%)',
   },
 }));
 
@@ -47,7 +49,7 @@ function UserAvatar({ _id, photo, online }: IProps) {
           alt="user-photo"
           sx={{ width: 224, height: 224 }}
           imgProps={{
-            loading: 'eager',
+            loading: 'lazy',
           }}
         />
       </Badge>

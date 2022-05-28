@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   grid: {
     position: 'relative',
-    justifyContent: 'center',
+    justifyContent: 'start',
   },
   updateBtn: {
     position: 'absolute',
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100% !important',
     height: '100% !important',
     '& img': {
-      objectFit: 'fill',
+      objectFit: 'cover',
     },
   },
 }));
@@ -55,7 +55,7 @@ function ProfileAvatar({ children, _id, backgroundAvatar }: IProps) {
         className={classes.profileAvatar}
         sx={{ position: 'absolute' }}
         imgProps={{
-          loading: 'eager',
+          loading: 'lazy',
         }}
       />
       <Grid container className={classes.grid}>

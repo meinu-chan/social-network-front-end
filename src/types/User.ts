@@ -10,6 +10,12 @@ export interface IUser {
   password: string;
   role: UserRole;
   nickname?: string;
+  birthday?: string;
+  phone?: string;
+  hobbies?: string;
+  job?: string;
+  school?: string;
+  university?: string;
   photo: string;
   backgroundAvatar: string;
   lastOnline: Date;

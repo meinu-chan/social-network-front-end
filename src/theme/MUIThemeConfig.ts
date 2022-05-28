@@ -3,7 +3,7 @@ import colors from './colors';
 
 const appTheme = createTheme({
   typography: {
-    fontFamily: 'Montserrat',
+    fontFamily: ['Montserrat', 'sans-serif'].join(','),
   },
   palette: {
     primary: {

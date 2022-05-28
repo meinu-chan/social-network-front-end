@@ -6,6 +6,7 @@ import Loader from '../components/Loader';
 import SignIn from '../containers/Authentication/SignIn';
 import SignUp from '../containers/Authentication/SignUp';
 import Chat from '../containers/Chat';
+import Friends from '../containers/Friend';
 import Setting from '../containers/Setting';
 import User from '../containers/User';
 import { scrollToTop } from '../helpers/common';
@@ -67,6 +68,7 @@ function Layout() {
             <Route path={appLinks.login.link} element={<SignIn />} />
             <Route path={appLinks.registration.link} element={<SignUp />} />
             <Route path={`${appLinks.index.link}:userId`} element={<User />} />
+            <Route path={appLinks.userFriends.link} element={<Friends />} />
 
             {privateRoutes.map(({ path, element }) => (
               <Route path={path} key={path} element={<PrivateRoute isAuthenticated={isAuth} />}>
