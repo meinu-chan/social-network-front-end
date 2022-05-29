@@ -3,7 +3,8 @@ import { ClientToServerEvent, ServerToClientEvent, SocketEventHandler } from './
 
 export const emit = (data: ClientToServerEvent) => socket.send(JSON.stringify(data));
 
-const socket = new WebSocket(`ws://${baseURL?.split('://')[1]}`);
+//@ts-ignore
+const socket = new WebSocket(baseURL.replace(/^http/, 'ws'));
 
 socket.onmessage = (e: MessageEvent<string>) => {
   if (socket.readyState !== socket.OPEN) return;

@@ -7,7 +7,7 @@ import SignIn from '../containers/Authentication/SignIn';
 import SignUp from '../containers/Authentication/SignUp';
 import Chat from '../containers/Chat';
 import Friends from '../containers/Friend';
-import Setting from '../containers/Setting';
+import Settings from '../containers/Settings';
 import User from '../containers/User';
 import { scrollToTop } from '../helpers/common';
 import NotFound from '../router/NotFound';
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const privateRoutes: IPrivateRoute[] = [
-  { path: appLinks.setting.link, element: <Setting /> },
+  { path: appLinks.setting.link, element: <Settings /> },
   { path: appLinks.chat.link, element: <Chat /> },
 ];
 
@@ -68,7 +68,8 @@ function Layout() {
             <Route path={appLinks.login.link} element={<SignIn />} />
             <Route path={appLinks.registration.link} element={<SignUp />} />
             <Route path={`${appLinks.index.link}:userId`} element={<User />} />
-            <Route path={appLinks.userFriends.link} element={<Friends />} />
+            <Route path={appLinks.subscriptions.link} element={<Friends type="subscriptions" />} />
+            <Route path={appLinks.subscribers.link} element={<Friends type="subscribers" />} />
 
             {privateRoutes.map(({ path, element }) => (
               <Route path={path} key={path} element={<PrivateRoute isAuthenticated={isAuth} />}>

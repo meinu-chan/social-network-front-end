@@ -22,4 +22,7 @@ const isValidEmail = (email: string) => {
   return false;
 };
 
-export { isValidEmail, isEmptyString, isValidPassword, getTextWithoutSpaces };
+const isValidPhone = (phone: string) =>
+  /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/.test(phone);
+
+export { isValidEmail, isEmptyString, isValidPassword, getTextWithoutSpaces, isValidPhone };

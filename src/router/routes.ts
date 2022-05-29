@@ -28,9 +28,13 @@ const appLinks: IAppLinks = {
     name: 'Chat Page',
     link: '/chat',
   },
-  userFriends: {
-    name: 'Friends Page',
-    link: '/:userId/friends',
+  subscriptions: {
+    name: 'User subscriptions',
+    link: '/:userId/subscriptions',
+  },
+  subscribers: {
+    name: 'User subscribers',
+    link: '/:userId/subscribers',
   },
 };
 

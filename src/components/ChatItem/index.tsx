@@ -14,6 +14,7 @@ import { IChatListItem } from '../../types/Chat';
 import clsx from 'clsx';
 import colors from '../../theme/colors';
 import { IUser } from '../../types/User';
+import { useImageSrc } from '../../hooks/useImageSrc';
 
 const useStyles = makeStyles((theme: Theme) => ({
   listItem: {
@@ -53,6 +54,8 @@ function ChatItem({
     [members, user._id]
   );
 
+  const userPhotoSrc = useImageSrc(member.photo);
+
   return (
     <ListItem
       alignItems="flex-start"
@@ -62,7 +65,7 @@ function ChatItem({
       onClick={() => handleClick(chatId, member)}
     >
       <ListItemAvatar>
-        <Avatar src={member.photo} alt={member.fullName} />
+        <Avatar src={userPhotoSrc} alt={member.fullName} />
       </ListItemAvatar>
       <ListItemText
         primary={member.fullName}

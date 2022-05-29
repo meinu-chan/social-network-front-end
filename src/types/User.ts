@@ -21,6 +21,8 @@ export interface IUser {
   lastOnline: Date;
   updatedAt: Date;
   createdAt: Date;
+  subscribed: IUser['_id'][];
+  subscribers: IUser['_id'][];
 }
 
 export interface UserData
@@ -37,3 +39,10 @@ export type UpdateUserParams = Partial<
 export type GetUserResponse = Promise<UserData>;
 
 export type GetNonPaginatedUsersResponse = Promise<UserData[]>;
+
+export interface GetCommunityPayload {
+  userId: IUser['_id'];
+  type: 'subscribers' | 'subscribed';
+}
+
+export type GetCommunityResponse = Promise<UserData[]>;

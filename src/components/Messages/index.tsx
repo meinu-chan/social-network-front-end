@@ -30,6 +30,8 @@ import { useLastOnlineDate } from '../../hooks/useLastOnlineDate';
 import { useNavigate } from 'react-router-dom';
 import { appLinks } from '../../router/routes';
 import { IChatListItem } from '../../types/Chat';
+import useLoadMore from '../../hooks/useLoadMore';
+import { useImageSrc } from '../../hooks/useImageSrc';
 
 interface IProps {
   chat: string;
@@ -118,21 +120,9 @@ function Messages({ chat, companion, getChatList }: IProps) {
   const [lastOnline, setLastOnline] = useState(companion.lastOnline);
   const formattedLastOnline = useLastOnlineDate(lastOnline);
 
-  const observer = useRef<IntersectionObserver>();
-  const lastMessage = useCallback(
-    (node) => {
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !!data!.messages.length) {
-          getMessageListApi({ args: { chatId: chat, date: messageLastDate } });
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [chat, data, getMessageListApi, isLoading, messageLastDate]
-  );
+  const lastMessage = useLoadMore(isLoading, !!data?.messages.length, async () => {
+    getMessageListApi({ args: { chatId: chat, date: messageLastDate } });
+  });
 
   const loader = useRef<HTMLDivElement>(null);
 
@@ -212,11 +202,13 @@ function Messages({ chat, companion, getChatList }: IProps) {
     };
   }, [companion._id, online, updateMessages]);
 
+  const companionPhoto = useImageSrc(companion.photo);
+
   return (
     <>
       <Box className={classes.chatHeader}>
         <Box className={classes.userInfo} onClick={redirectToUser}>
-          <Avatar src={companion.photo} alt={companion.fullName} />
+          <Avatar src={companionPhoto} alt={companion.fullName} />
           <Grid container direction="column" className={classes.grid}>
             <Grid item>
               <Typography noWrap>{companion.fullName}</Typography>

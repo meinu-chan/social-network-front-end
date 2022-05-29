@@ -178,6 +178,7 @@ function Message({ withTail, companion, isFirstUnread = false, ...messageData }:
           primaryTypographyProps={{
             variant: 'h6',
             style: {
+              wordBreak: 'break-word',
               fontWeight: '300',
             },
           }}

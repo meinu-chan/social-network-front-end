@@ -16,5 +16,5 @@ export const useImageSrc = (src: string) => {
     throw error;
   }
 
-  return async ? data?.url : src;
+  return async ? data?.url || '' : src;
 };

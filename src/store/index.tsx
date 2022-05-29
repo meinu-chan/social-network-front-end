@@ -16,6 +16,8 @@ export const initialState: AppStateContext = {
     createdAt: '',
     updatedAt: '',
     lastOnline: '',
+    subscribed: [],
+    subscribers: [],
   },
 };
 

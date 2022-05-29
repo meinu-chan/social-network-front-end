@@ -27,6 +27,9 @@ import { logOutUser } from '../../store/actions';
 import Loader from '../Loader';
 import SearchBar from './SearchBar';
 import useApiRequest from '../../hooks/useApiRequest';
+import { addMessageHandler, removeMessageHandler } from '../../socket';
+import { FromServerGlobalReceiveMessageEvent } from '../../socket/types/serverEvents';
+import { getCountOfUnreadMessage } from '../../api/chat';
 
 const useStyles = makeStyles((theme: Theme) => ({
   logoBox: {
@@ -65,7 +68,10 @@ function Header() {
     showSuccessMessage: false,
   });
 
+  const [unreadCount, setUnreadCount] = useState(0);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const { requestFn: unreadCountApi, data } = useApiRequest(getCountOfUnreadMessage);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -74,6 +80,23 @@ function Header() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    if (state.isAuth) unreadCountApi({});
+    addMessageHandler<FromServerGlobalReceiveMessageEvent>('GLOBAL::CHAT::RECEIVE', () => {
+      setUnreadCount((prev) => prev + 1);
+    });
+
+    return () => {
+      removeMessageHandler('GLOBAL::CHAT::RECEIVE');
+    };
+  }, [state.isAuth, unreadCountApi]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    setUnreadCount(data.unread);
+  }, [data]);
 
   useEffect(() => {
     [appLinks.login.link, appLinks.registration.link].includes(location.pathname)
@@ -137,7 +160,7 @@ function Header() {
                       sx={{ marginRight: '1rem' }}
                       onClick={() => navigate(appLinks.chat.link)}
                     >
-                      <Badge badgeContent={4} color="error" max={99}>
+                      <Badge badgeContent={unreadCount} color="error" max={99}>
                         <ChatIcon sx={{ color: colors.grey[50] }} />
                       </Badge>
                     </IconButton>

@@ -16,3 +16,11 @@ export interface IChatListItem extends Omit<IChat, 'members'> {
 }
 
 export type ChatListResponse = Promise<IChatListItem[]>;
+
+export interface StartChatParams extends Pick<IChat, 'isPrivate'> {
+  withUser: IUser['_id'];
+}
+
+export type StartChatResponse = Promise<IChat>;
+
+export type GetUnreadMessagesResponse = Promise<{ unread: number }>;
