@@ -54,7 +54,7 @@ function ChatItem({
     [members, user._id]
   );
 
-  const userPhotoSrc = useImageSrc(member.photo);
+  const userPhotoSrc = useImageSrc(member.photo || '');
 
   return (
     <ListItem
