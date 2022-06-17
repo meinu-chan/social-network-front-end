@@ -10,9 +10,18 @@ interface IProps {
   value: any;
   helperText: string | boolean;
   onChange: (value: string) => void;
+  isLoading: boolean;
 }
 
-function SettingField({ onChange, fieldName, isPhone = false, helperText, error, value }: IProps) {
+function SettingField({
+  onChange,
+  fieldName,
+  isPhone = false,
+  helperText,
+  error,
+  value,
+  isLoading,
+}: IProps) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Typography
@@ -26,17 +35,23 @@ function SettingField({ onChange, fieldName, isPhone = false, helperText, error,
       </Typography>
       <FormControl>
         {isPhone ? (
-          <PhoneInput style={{ marginLeft: '5%' }} country="UA" value={value} onChange={onChange} />
+          <PhoneInput
+            style={{ marginLeft: '5%' }}
+            country="UA"
+            value={value}
+            onChange={onChange}
+            disabled={isLoading}
+          />
         ) : (
           <Input
             value={value}
             sx={{ marginLeft: '5%' }}
             placeholder={'Not specified'}
-            error={error}
             onChange={(e) => onChange(e.target.value)}
+            disabled={isLoading}
           />
         )}
-        <FormHelperText>{helperText}</FormHelperText>
+        <FormHelperText error={error}>{helperText}</FormHelperText>
       </FormControl>
     </Box>
   );

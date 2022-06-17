@@ -1,6 +1,6 @@
 import { Box, Grid, IconButton, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useState, useEffect } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
@@ -59,24 +59,28 @@ function Settings() {
   const handleEdit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (isError) {
+    if (isError && !isValid) {
       setIsError(false);
       setDefaultValidationState();
     }
 
-    isValidSettingData(model, validateModel);
     if (isValid) {
       const payload = Object.entries(model).reduce((acc, [key, value]) => {
         //@ts-ignore
-        if (model[key]) acc[key] = value;
+        if (typeof model[key] !== 'undefined') acc[key] = value;
 
         return acc;
       }, {});
       requestFn({ args: payload });
-    } else {
-      setIsError(true);
+
+      return;
     }
+    setIsError(true);
   };
+
+  useEffect(() => {
+    isValidSettingData(model, validateModel);
+  }, [model, validateModel]);
 
   return (
     <Box
@@ -116,6 +120,7 @@ function Settings() {
                   onChange={handleModelChange.bind(null, 'fullName')}
                   error={isError && !valid.fullName}
                   helperText={isError && !valid.fullName && 'Invalid full name'}
+                  isLoading={isLoading}
                 />
                 <SettingField
                   fieldName="Phone number:"
@@ -124,22 +129,10 @@ function Settings() {
                   onChange={handleModelChange.bind(null, 'phone')}
                   error={isError && !valid.phone}
                   helperText={isError && !valid.phone && 'Invalid phone'}
+                  isLoading={isLoading}
                 />
               </Box>
             </Box>
-            <CustomButton
-              variant="contained"
-              sx={{
-                height: 'fit-content',
-                width: 'fit-content',
-                alignSelf: 'center',
-                textTransform: 'uppercase',
-              }}
-              size="large"
-              onClick={handleEdit}
-            >
-              Edit
-            </CustomButton>
           </Grid>
           <Grid
             item
@@ -151,16 +144,17 @@ function Settings() {
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <SettingsIcon />
                 <Typography variant="h5" className={classes.category}>
-                  Education and word
+                  Education and work
                 </Typography>
               </Box>
               <Box sx={{ marginLeft: '5%' }}>
                 <SettingField
-                  fieldName="Studies"
+                  fieldName="Studies:"
                   value={model.university}
                   onChange={handleModelChange.bind(null, 'university')}
                   error={isError && !valid.university}
                   helperText={isError && !valid.university && 'Invalid university'}
+                  isLoading={isLoading}
                 />
                 <SettingField
                   fieldName="Working at:"
@@ -168,21 +162,10 @@ function Settings() {
                   onChange={handleModelChange.bind(null, 'job')}
                   error={isError && !valid.job}
                   helperText={isError && !valid.job && 'Invalid job'}
+                  isLoading={isLoading}
                 />
               </Box>
             </Box>
-            <CustomButton
-              variant="contained"
-              sx={{
-                height: 'fit-content',
-                width: 'fit-content',
-                alignSelf: 'center',
-                textTransform: 'uppercase',
-              }}
-              size="large"
-            >
-              Edit
-            </CustomButton>
           </Grid>
           <Grid
             item
@@ -199,11 +182,12 @@ function Settings() {
               </Box>
               <Box sx={{ marginLeft: '5%' }}>
                 <SettingField
-                  fieldName="Nickname"
+                  fieldName="Nickname:"
                   value={model.nickname}
                   onChange={handleModelChange.bind(null, 'nickname')}
                   error={isError && !valid.nickname}
                   helperText={isError && !valid.nickname && 'Invalid nickname'}
+                  isLoading={isLoading}
                 />
                 <SettingField
                   fieldName="Hobbies:"
@@ -211,9 +195,20 @@ function Settings() {
                   onChange={handleModelChange.bind(null, 'hobbies')}
                   error={isError && !valid.hobbies}
                   helperText={isError && !valid.hobbies && 'Invalid hobbies'}
+                  isLoading={isLoading}
                 />
               </Box>
             </Box>
+          </Grid>
+          <Grid
+            item
+            xs={8}
+            sx={{
+              flexDirection: 'row',
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
             <CustomButton
               variant="contained"
               sx={{
@@ -222,9 +217,11 @@ function Settings() {
                 alignSelf: 'center',
                 textTransform: 'uppercase',
               }}
+              disabled={isLoading}
               size="large"
+              onClick={handleEdit}
             >
-              Edit
+              Save
             </CustomButton>
           </Grid>
         </Grid>

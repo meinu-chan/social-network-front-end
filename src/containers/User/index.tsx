@@ -269,13 +269,6 @@ function User() {
               {data.fullName}
             </Typography>
           </Grid>
-          {data.nickname && (
-            <Grid item>
-              <Typography align="center" variant="subtitle1">
-                {data.nickname}
-              </Typography>
-            </Grid>
-          )}
           <Grid item>
             <Grid container flexDirection="column" className={classes.aboutUser} rowSpacing={2}>
               <Grid item>
