@@ -16,6 +16,7 @@ const ENDPOINTS = {
   SUBSCRIBE: (userId: string) => `${PREFIX}/users/${userId}/subscribe`,
   UNSUBSCRIBE: (userId: string) => `${PREFIX}/users/${userId}/unsubscribe`,
   COMMUNITY_LIST: (userId: string) => `${PREFIX}/users/${userId}/community`,
+  OFFLINE: `${PREFIX}/users/offline`,
 
   CHAT_LIST: `${PREFIX}/chats`,
   CHAT_START: `${PREFIX}/chats/start`,

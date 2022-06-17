@@ -4,7 +4,9 @@ import { ClientToServerEvent, ServerToClientEvent, SocketEventHandler } from './
 export const emit = (data: ClientToServerEvent) => socket.send(JSON.stringify(data));
 
 //@ts-ignore
-const socket = new WebSocket(baseURL.replace(/^http/, 'ws'));
+const connectSocket = () => new WebSocket(baseURL.replace(/^http/, 'ws'));
+
+let socket = connectSocket();
 
 socket.onmessage = (e: MessageEvent<string>) => {
   if (socket.readyState !== socket.OPEN) return;
@@ -20,6 +22,10 @@ socket.onmessage = (e: MessageEvent<string>) => {
 type HandlerKeys = ServerToClientEvent['event'];
 
 const handleSocketResponse: { [key in HandlerKeys]?: SocketEventHandler<any> } = {};
+
+socket.onclose = () => {
+  socket = connectSocket();
+};
 
 export function addMessageHandler<T extends ServerToClientEvent>(
   name: T['event'],

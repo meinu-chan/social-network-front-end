@@ -1,6 +1,8 @@
 import { Box, Typography, colors, Input, FormHelperText, FormControl } from '@mui/material';
 import React from 'react';
-import MuiPhoneNumber from 'material-ui-phone-number';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
+
 interface IProps {
   fieldName: string;
   isPhone?: boolean;
@@ -24,23 +26,7 @@ function SettingField({ onChange, fieldName, isPhone = false, helperText, error,
       </Typography>
       <FormControl>
         {isPhone ? (
-          <MuiPhoneNumber
-            sx={{ marginLeft: '5%' }}
-            defaultCountry="ua"
-            autoFormat={false}
-            disableCountryCode
-            disableDropdown
-            error
-            value={value}
-            onChange={(e) => {
-              if (typeof e === 'string') {
-                onChange(e);
-                return;
-              }
-
-              onChange(e.target.value);
-            }}
-          />
+          <PhoneInput style={{ marginLeft: '5%' }} country="UA" value={value} onChange={onChange} />
         ) : (
           <Input
             value={value}

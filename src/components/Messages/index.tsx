@@ -174,7 +174,10 @@ function Messages({ chat, companion, getChatList }: IProps) {
   }, [data]);
 
   useEffect(() => {
-    addMessageHandler<FromServerReceiveMessageEvent>('CHAT::RECEIVE', updateMessages);
+    addMessageHandler<FromServerReceiveMessageEvent>('CHAT::RECEIVE', (payload) => {
+      updateMessages(payload);
+      getChatList({});
+    });
 
     let timer: NodeJS.Timeout;
 
@@ -200,9 +203,9 @@ function Messages({ chat, companion, getChatList }: IProps) {
       removeMessageHandler('USER::ONLINE');
       removeMessageHandler('USER::DISCONNECT');
     };
-  }, [companion._id, online, updateMessages]);
+  }, [companion._id, getChatList, online, updateMessages]);
 
-  const companionPhoto = useImageSrc(companion.photo);
+  const companionPhoto = useImageSrc(companion.photo || '');
 
   return (
     <>

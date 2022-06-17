@@ -25,11 +25,20 @@ const refreshToken = (): AuthRefreshTokenResponse =>
   }).then((res) => res.json());
 
 const logout = (): AuthLogOutResponse =>
-  apiClient.post(endpointLogOut, undefined, { withCredentials: true }).then((res) => {
-    closeSocket();
+  apiClient
+    .post(endpointLogOut, undefined, { withCredentials: true })
+    .then((res) => {
+      closeSocket();
 
-    return res.data;
-  });
+      return res.data;
+    })
+    .then(() => {
+      const accessToken = apiClient.defaults.headers.common.Authorization.split(' ')[1];
+      const headers = new Blob([JSON.stringify({ accessToken })], {
+        type: 'application/json',
+      });
+      navigator.sendBeacon(`${baseURL}${ENDPOINTS.OFFLINE}`, headers);
+    });
 
 const signUp = (params: IAuthSignUpParams): AuthSignUpResponse =>
   apiClient.post(endpointSignUp, params, { withCredentials: true }).then((res) => res.data);

@@ -254,11 +254,17 @@ function User() {
               </>
             </ProfileAvatar>
           </Grid>
-          <Grid item>
+          <Grid item xs>
             <Typography
               variant="h4"
               color="#50514F"
-              sx={{ m: '1% 0 2% 20%', fontWeight: 700, fontFamily: 'Montserrat' }}
+              sx={{
+                m: '1% 0 2%',
+                fontWeight: 700,
+                fontFamily: 'Montserrat',
+                transform: 'translateX(calc(258px + 5%))',
+                width: 'fit-content',
+              }}
             >
               {data.fullName}
             </Typography>

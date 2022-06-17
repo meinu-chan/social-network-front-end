@@ -1,6 +1,7 @@
 import React, { useCallback, useLayoutEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import {
+  baseURL,
   createApiClientRequestInterceptor,
   createApiClientResponseInterceptor,
   setApiAuthorizationHeader,
@@ -10,6 +11,7 @@ import Loader from '../components/Loader';
 import { getMe } from '../api/userApi';
 import { useAppContext } from '../store';
 import { logOutUser, authUser } from '../store/actions';
+import ENDPOINTS from '../api/endpoints';
 
 interface IProps {
   children: React.ReactNode;
@@ -32,6 +34,13 @@ const DataWrapper = ({ children }: IProps) => {
         const res = await getMe();
 
         dispatch(authUser(res));
+
+        window.onbeforeunload = (e) => {
+          const headers = new Blob([JSON.stringify({ accessToken })], {
+            type: 'application/json',
+          });
+          navigator.sendBeacon(`${baseURL}${ENDPOINTS.OFFLINE}`, headers);
+        };
       }
     } catch (e: any) {
       if (e?.response?.status !== 404)

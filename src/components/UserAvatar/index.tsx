@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: '#ffffff',
     border: '1px solid',
     borderRadius: '50%',
-    transform: 'translateY(35%)',
+    transform: 'translateY(calc(100% - 150px))',
   },
 }));
 
